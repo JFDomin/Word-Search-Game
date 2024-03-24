@@ -14,10 +14,10 @@ public class Leaderboard{
     }
 
     public int getRank(){
-
+        return rank;
     }
 
-    public sortPlayerByScore(){
+    public void sortPlayerByScore(){
         
     }
 
