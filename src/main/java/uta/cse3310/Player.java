@@ -7,15 +7,15 @@ public class Player{
     public string playerColor;
  
     public string getName() {
- 
+        return nickname; 
     }
     
     public boolean joinGame() {
- 
+        return true; 
     }
  
     public boolean leaveGame() {
- 
+        return true; 
     }
      
     public void chooseStartLetter() {
@@ -31,10 +31,10 @@ public class Player{
     }
  
     public string assignColor() {
- 
+        return color; 
     }
  
     public int getPlayerScore() {
-    
+        return score;
     }
 }
