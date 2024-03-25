@@ -5,11 +5,11 @@ public class WordBank extends WordGrid{
     private int endpPosition;
     private boolean found;
 
-    public class readFileIntoArray(){
+    public ArrayList<String> readFileIntoArray(){
         return words;
     }
-    public markFound(){
-        return true; 
+    public boolean markFound(){
+        return true;
     }
     public void displayWordBank (){
 
