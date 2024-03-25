@@ -72,7 +72,6 @@ public class App extends WebSocketServer {
 
   private Instant startTime;
 
-
   public App(int port) {
     super(new InetSocketAddress(port));
   }
@@ -97,7 +96,7 @@ public class App extends WebSocketServer {
     // search for a game needing a player
     Game G = null;
     for (Game i : ActiveGames) {
-      if (i.Players == uta.cse3310.PlayerType.XPLAYER) {
+      if (i.Players == uta.cse3310.PlayerType.PLAYER1) {
         G = i;
         System.out.println("found a match");
       }
