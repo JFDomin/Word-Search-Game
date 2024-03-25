@@ -2,11 +2,11 @@ package uta.cse3310;
 
 public class Player{
     public int playerID;
-    public string nickname;
+    public String nickname;
     public int playerScore;
-    public string playerColor;
+    public String playerColor;
  
-    public string getName() {
+    public String getName() {
         return nickname; 
     }
     
@@ -30,7 +30,7 @@ public class Player{
  
     }
  
-    public string assignColor() {
+    public String assignColor() {
         return color; 
     }
  
