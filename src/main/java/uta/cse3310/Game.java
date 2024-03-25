@@ -1,22 +1,15 @@
 package uta.cse3310;
 
 public class Game {
-    public PlayerType Players;
-    Players = PlayerType.PLAYER1;
 
+    // PlayerType Players;
     // public PlayerType CurrentTurn;
-    // public PlayerType[] Button;
-    // // Buttons are indexed 0 to 8 in the code
-    // // 0 1 2
-    // // 3 4 5
-    // // 6 7 8
+
 
     // public String[] Msg;
     // public int GameId;
-    // public Statistics Stats;
 
-    // Game(Statistics s) {
-    //     Stats = s;
+    //Game() {
     //     Button = new PlayerType[9];
     //     // initialize it
     //     ResetBoard();
@@ -28,7 +21,7 @@ public class Game {
     //     Msg = new String[2];
     //     Msg[0] = "Waiting for other player to join";
     //     Msg[1] = "";
-    // }
+    //}
 
     // public void ResetBoard() {
     //     // initializes the board to NOPLAYER in all spots
