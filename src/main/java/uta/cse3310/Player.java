@@ -32,10 +32,10 @@ public class Player{
     }
  
     public String assignColor() {
-        return color; 
+        return playerColor; 
     }
  
     public int getPlayerScore() {
-        return score;
+        return playerScore;
     }
 }
