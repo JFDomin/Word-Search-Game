@@ -72,7 +72,6 @@ public class App extends WebSocketServer {
 
   private Instant startTime;
 
-  private Statistics stats;
 
   public App(int port) {
     super(new InetSocketAddress(port));
@@ -106,7 +105,7 @@ public class App extends WebSocketServer {
 
     // No matches ? Create a new Game.
     if (G == null) {
-      G = new Game(stats);
+      G = new Game();
       G.GameId = GameId;
       GameId++;
       // Add the first player
@@ -139,8 +138,6 @@ public class App extends WebSocketServer {
             + escape(jsonString));
 
     // Update the running time
-    stats.setRunningTime(Duration.between(startTime, Instant.now()).toSeconds());
-
     // The state of the game has changed, so lets send it to everyone
     jsonString = gson.toJson(G);
     System.out
@@ -169,7 +166,6 @@ public class App extends WebSocketServer {
     UserEvent U = gson.fromJson(message, UserEvent.class);
 
     // Update the running time
-    stats.setRunningTime(Duration.between(startTime, Instant.now()).toSeconds());
 
     // Get our Game Object
     Game G = conn.getAttachment();
@@ -202,7 +198,6 @@ public class App extends WebSocketServer {
   @Override
   public void onStart() {
     setConnectionLostTimeout(0);
-    stats = new Statistics();
     startTime = Instant.now();
   }
 
