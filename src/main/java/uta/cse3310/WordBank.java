@@ -7,6 +7,7 @@ public class WordBank extends WordGrid{
     private boolean found;
 
     public ArrayList<String> readFileIntoArray(){
+        ArrayList<String>  words = new ArrayList<>();
         return words;
     }
     public boolean markFound(){

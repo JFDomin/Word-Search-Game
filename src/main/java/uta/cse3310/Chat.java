@@ -8,7 +8,8 @@ public class Chat{
     }
 
     public List<String> receiveMessage(){
-        
+        List<String> message = new List<>();
+        return message;
     }
 
     public void displayMessage(){
