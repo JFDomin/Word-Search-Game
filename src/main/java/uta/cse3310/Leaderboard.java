@@ -1,6 +1,9 @@
 package uta.cse3310;
 
 public class Leaderboard{
+
+    public int rank; 
+
     public void displayLeaderboard(){
         
     }
