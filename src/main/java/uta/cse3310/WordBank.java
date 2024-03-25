@@ -1,7 +1,7 @@
 package uta.cse3310;
 import java.util.ArrayList;
 
-public class WordBank extends WordGrid{
+public class WordBank {
     private int startPosition;
     private int endPosition;
     private boolean found;
