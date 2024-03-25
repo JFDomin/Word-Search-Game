@@ -2,7 +2,7 @@ package uta.cse3310;
 
 public class WordBank extends WordGrid{
     private int startPosition;
-    private int endpPosition;
+    private int endPosition;
     private boolean found;
 
     public ArrayList<String> readFileIntoArray(){
