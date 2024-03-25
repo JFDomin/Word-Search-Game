@@ -1,5 +1,5 @@
 package uta.cse3310;
-import java.util.List;
+import java.util.ArrayList;
 
 public class Chat{
     public String Messages;
@@ -8,8 +8,8 @@ public class Chat{
 
     }
 
-    public List<String> receiveMessage(){
-        List<String> message = new List<>();
+    public ArrayList<String> receiveMessage(){
+        ArrayList<String> message = new ArrayList<>();
         return message;
     }
 
