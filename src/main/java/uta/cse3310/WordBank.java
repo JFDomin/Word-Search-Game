@@ -28,7 +28,27 @@ public class WordBank {
     public boolean markFound(){
         return true;
     }
-    public void displayWordBank (){
 
+    public static int randomNum(){
+        Random rand = new Random();
+        return rand.nextInt(8900);
+    }
+
+    public void displayWordBank (ArrayList<String> wordBank){
+        System.out.println(wordBank);
+    }
+    
+    public static ArrayList<String> wordBank (ArrayList<String> found, ArrayList<String> wordList){
+        ArrayList<String> wordBank = new ArrayList<>();
+        
+        while(wordBank.size() != 500){
+            int i = randomNum();
+            String word = wordList.get(i);
+            if(!found.contains(word)){
+                wordBank.add(word);
+                found.add(word);
+            }
+        }
+        return wordBank;
     }
 }
