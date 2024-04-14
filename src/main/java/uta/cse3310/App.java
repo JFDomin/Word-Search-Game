@@ -233,3 +233,10 @@ public class App extends WebSocketServer {
 
   }
 }
+
+
+// professor added this part on his repo to make the websocket port 100 greater than the http port
+// port = 9180;
+// String WSPort = System.getenv("WEBSOCKET_PORT");
+// if (WSPort!=null) {
+//   port = Integer.valueOf(WSPort);
