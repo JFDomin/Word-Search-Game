@@ -210,5 +210,6 @@ public class WordGrid {
         }
         totalCharCount = 0;
         validCharCount = 0;
+        usedWords.clear();
     }
 }
