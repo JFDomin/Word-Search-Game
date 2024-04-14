@@ -40,7 +40,9 @@ public class WordGrid {
             generateGrid(word_bank);
         }
     }
-    
+    public Character[][] getgrid(){       
+        return grid;
+    }
     public void place(String word,int[] start, int length){
         int allocation = rand.nextInt(5);
         switch(allocation){

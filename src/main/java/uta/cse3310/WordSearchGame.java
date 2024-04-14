@@ -12,18 +12,40 @@ public class WordSearchGame{
    public Map<Player, Integer> scores;
    public int maxPlayers;
    public List<String> currentWords;
+
+    ArrayList<String> words = WordBank.readFileIntoArray("src/main/java/uta/cse3310/filtered_word 1.txt");
+    ArrayList<String> found = new ArrayList<>();
+    ArrayList<String> wordBank = WordBank.wordBank(found, words);
+    WordGrid grid = new WordGrid(50,wordBank);
+   //private WordGrid grid = new WordGrid(50,50);
    
+ //   public static void main(String[] args){
+    //    ArrayList<String> words = WordBank.readFileIntoArray("src/main/java/uta/cse3310/filtered_word 1.txt");
+    //    ArrayList<String> found = new ArrayList<>();
+   //     ArrayList<String> wordBank = WordBank.wordBank(found, words);
+    //    WordGrid grid = new WordGrid(50,wordBank);
+  //  }
+
     public enum GameState {
         NOT_STARTED,
         IN_PROGRESS,
         ENDED 
     }
+
     
-    
-    public boolean startGame() {
-        return true;
+    public void startGame() {
+        //ArrayList<String> words = WordBank.readFileIntoArray("src/main/java/uta/cse3310/filtered_word 1.txt");
+       // ArrayList<String> found = new ArrayList<>();
+      //  ArrayList<String> wordBank = WordBank.wordBank(found, words);
+      //  WordGrid grid = new WordGrid(50,wordBank);
+        grid.generateGrid(wordBank);
+        grid.fillGrid();
+        grid.printGrid();
     }
-    
+       public Character[][] getwordgrid(){ 
+        //WordGrid grid = new WordGrid(50,wordBank);      
+        return grid.getgrid();
+    }
     public boolean endGame() {
         return true;
     }

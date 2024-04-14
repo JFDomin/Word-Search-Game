@@ -37,15 +37,20 @@
  */
 
 package uta.cse3310;
-
+import java.io.*; 
+import java.io.BufferedWriter;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.nio.ByteBuffer;
 import java.util.Collections;
-
+import java.net.Socket;
 import org.java_websocket.WebSocket;
 import org.java_websocket.drafts.Draft;
 import org.java_websocket.drafts.Draft_6455;
@@ -60,17 +65,26 @@ import java.time.Duration;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-public class App extends WebSocketServer {
+public class App extends WebSocketServer implements Runnable{
 
   // All games currently underway on this server are stored in
   // the vector ActiveGames
-  private Vector<Game> ActiveGames = new Vector<Game>();
+  private Vector<WordSearchGame> Game = new Vector<WordSearchGame>();
+   private WordGrid wordGrid;
+  public static ArrayList<App> clientHandlers = new ArrayList<>();
+  private WebSocket websocket;
+  private Socket socket;
+  private BufferedReader bufferedReader;
+  private BufferedWriter bufferedWriter;
+  private String clientUsername;
 
-  private int GameId = 1;
+  private int GameId = 0;
 
   private int connectionId = 0;
 
   private Instant startTime;
+
+  private WordGrid Grid; 
 
   public App(int port) {
     super(new InetSocketAddress(port));
@@ -83,101 +97,75 @@ public class App extends WebSocketServer {
   public App(int port, Draft_6455 draft) {
     super(new InetSocketAddress(port), Collections.<Draft>singletonList(draft));
   }
-
   @Override
   public void onOpen(WebSocket conn, ClientHandshake handshake) {
 
-    // connectionId++;
-
-    // System.out.println(conn.getRemoteSocketAddress().getAddress().getHostAddress() + " connected");
-
-    // ServerEvent E = new ServerEvent();
-
+    System.out.println(conn.getRemoteSocketAddress().getAddress().getHostAddress() + " connected");
+    
+     ServerEvent E = new ServerEvent();
+     Gson gson = new Gson();
+     String jsonString = gson.toJson(E);
+     conn.send(jsonString);
     // // search for a game needing a player
-    // Game G = null;
-    // for (Game i : ActiveGames) {
-    //   if (i.Players == uta.cse3310.PlayerType.PLAYER1) {
-    //     G = i;
-    //     System.out.println("found a match");
-    //   }
-    // }
-
-    // // No matches ? Create a new Game.
-    // if (G == null) {
-    //   G = new Game();
-    //   G.GameId = GameId;
-    //   GameId++;
-    //   // Add the first player
-    //   G.Players = PlayerType.XPLAYER;
-    //   ActiveGames.add(G);
-    //   System.out.println(" creating a new Game");
-    // } else {
-    //   // join an existing game
-    //   System.out.println(" not a new game");
-    //   G.Players = PlayerType.OPLAYER;
-    //   G.StartGame();
-    // }
-
-    // // create an event to go to only the new player
-    // E.YouAre = G.Players;
-    // E.GameId = G.GameId;
-
-    // // allows the websocket to give us the Game when a message arrives..
-    // // it stores a pointer to G, and will give that pointer back to us
-    // // when we ask for it
-    // conn.setAttachment(G);
-
-    // Gson gson = new Gson();
-
-    // // Note only send to the single connection
-    // String jsonString = gson.toJson(E);
-    // conn.send(jsonString);
-    // System.out
+     WordSearchGame G = new WordSearchGame();
+     //WordGrid grid = new Word();
+    conn.setAttachment(G);
+       System.out.println(" creating a new Game");
+        broadcast(jsonString);
+        //G.startGame();
+     conn.setAttachment(G);
+   // System.out
     //     .println("> " + Duration.between(startTime, Instant.now()).toMillis() + " " + connectionId + " "
-    //         + escape(jsonString));
+     //       + escape(jsonString));
+   //  System.out
+   //      .println("< " + Duration.between(startTime, Instant.now()).toMillis() + " " + "*" + " " + escape(jsonString));
+        broadcast(jsonString);
+        G.startGame();
+        G.getwordgrid();
+        Character[][] wordGrid = G.getwordgrid();
+        //ArrayList<Character> wordGrid = G.getwordgrid();
+        String gridJson = gson.toJson(wordGrid);
+        conn.send("{\"type\": \"wordGrid\",\"data\": "+ gridJson + "}");
+        System.out.println(gridJson);
 
-    // // Update the running time
-    // // The state of the game has changed, so lets send it to everyone
-    // jsonString = gson.toJson(G);
-    // System.out
-    //     .println("< " + Duration.between(startTime, Instant.now()).toMillis() + " " + "*" + " " + escape(jsonString));
-    // broadcast(jsonString);
-
+        
+        //grid.getgrid();
   }
 
   @Override
   public void onClose(WebSocket conn, int code, String reason, boolean remote) {
     System.out.println(conn + " has closed");
     // Retrieve the game tied to the websocket connection
-    // Game G = conn.getAttachment();
-    // G = null;
+     WordSearchGame G = conn.getAttachment();
+     G = null;
   }
 
   @Override
   public void onMessage(WebSocket conn, String message) {
     System.out
         .println("< " + Duration.between(startTime, Instant.now()).toMillis() + " " + "-" + " " + escape(message));
+      
 
     // // Bring in the data from the webpage
     // // A UserEvent is all that is allowed at this point
-    // GsonBuilder builder = new GsonBuilder();
-    // Gson gson = builder.create();
-    // UserEvent U = gson.fromJson(message, UserEvent.class);
+     GsonBuilder builder = new GsonBuilder();
+     Gson gson = builder.create();
+     //UserEvent U = gson.fromJson(message, UserEvent.class);
 
     // Update the running time
 
     // Get our Game Object
-    // Game G = conn.getAttachment();
-    // G.Update(U);
+     Game G = conn.getAttachment();
+     //G.Update(E);
 
     // send out the game state every time
     // to everyone
-    // String jsonString;
-    // jsonString = gson.toJson(G);
+     String jsonString;
+     jsonString = gson.toJson(G);
 
-    // System.out
-    //     .println("> " + Duration.between(startTime, Instant.now()).toMillis() + " " + "*" + " " + escape(jsonString));
-    // broadcast(jsonString);
+     System.out
+         .println("> " + Duration.between(startTime, Instant.now()).toMillis() + " " + "*" + " " + escape(jsonString));
+     broadcast(jsonString);
   }
 
   @Override
@@ -225,15 +213,18 @@ public class App extends WebSocketServer {
 
     // create and start the websocket server
 
-    port = 9880;
+    port = 9180;
     App A = new App(port);
     A.setReuseAddr(true);
     A.start();
     System.out.println("websocket Server started on port: " + port);
 
+    
+
+
+
   }
 }
-
 
 // professor added this part on his repo to make the websocket port 100 greater than the http port
 // port = 9180;

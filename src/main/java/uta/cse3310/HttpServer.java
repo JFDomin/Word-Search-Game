@@ -17,19 +17,28 @@ import net.freeutils.httpserver.HTTPServer.VirtualHost;
 public class HttpServer {
 
     private static final String HTML = "./html";
-    int port = 8080;
+    int port = 9080;
     String dirname = HTML;
 
     public HttpServer(int portNum, String dirName) {
+        System.out.println("creating http server port " + portNum);
         port = portNum;
         dirname = dirName;
     }
 
     public void start() {
-        try {
+        System.out.println("in httpd server start");
+       try {
+           // while (!websocket.isClosed()) {
+
+
+
+
+            //}
             File dir = new File(dirname);
             if (!dir.canRead())
                 throw new FileNotFoundException(dir.getAbsolutePath());
+
             // set up server
             HTTPServer server = new HTTPServer(port);
             VirtualHost host = server.getVirtualHost(null); // default host
@@ -43,8 +52,10 @@ public class HttpServer {
                     return 0;
                 }
             });
+
             server.start();
-        } catch (Exception e) {
+            System.out.println("HTTPServer is listening on port " + port);
+        } catch (IOException e) {
             System.err.println("error: " + e);
         }
 
