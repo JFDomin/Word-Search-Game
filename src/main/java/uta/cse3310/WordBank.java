@@ -14,7 +14,7 @@ public class WordBank {
         try(BufferedReader reader = new BufferedReader(new FileReader(FileName))){
             String line;
             while((line = reader.readLine()) != null){
-                if(line.length() > 3)
+                if(line.length() > 2)
                 {
                     words.add(line.toLowerCase());
                 }
@@ -31,7 +31,7 @@ public class WordBank {
 
     public static int randomNum(){
         Random rand = new Random();
-        return rand.nextInt(8900);
+        return rand.nextInt(7748);
     }
 
     public void displayWordBank (ArrayList<String> wordBank){
@@ -41,7 +41,7 @@ public class WordBank {
     public static ArrayList<String> wordBank (ArrayList<String> found, ArrayList<String> wordList){
         ArrayList<String> wordBank = new ArrayList<>();
         
-        while(wordBank.size() != 500){
+        while(wordBank.size() != 7000){
             int i = randomNum();
             String word = wordList.get(i);
             if(!found.contains(word)){
