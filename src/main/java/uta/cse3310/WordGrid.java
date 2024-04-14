@@ -1,116 +1,214 @@
 package uta.cse3310;
  
-import java.util.List;
- 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Random;
+
+
 public class WordGrid {
-    
-    private static final int DEFAULT_GRID_SIZE = 50;
-    private char[][] grid; // Assuming a 2D array of characters for the grid
-    private List<String> wordList; // A list to hold words
-    private int gridSize;
-    private Random random = new Random();
+    final int size = 50;
+    Character [][] grid = new Character[size][size];
+    double validCharCount = 0;
+    double totalCharCount = 0;
+    double density = 0;
+    ArrayList<String> usedWords = new ArrayList<>();
+    ArrayList<String> wordBank = new ArrayList<>();
+    int[] startPos = new int[]{0,0};
+    Random rand = new Random();
+    ArrayList<Character> alphabet = new ArrayList<>(Arrays.asList('a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'));
 
-    // Direction vectors for word placement
-    private static final int[][] DIRS = {
-        {1, 0},   // Down
-        {0, 1},   // Right
-        {1, 1},   // Diagonal down-right
-        {1, -1},  // Diagonal down-left
-        {-1, 0},  // Up
-        {0, -1},  // Left
-        {-1, -1}, // Diagonal up-left
-        {-1, 1}   // Diagonal up-right
-    };
- 
-    // Default constructor initializes a 50x50 grid
-    public WordGrid() {
-        this(DEFAULT_GRID_SIZE); }
-
-     // Direction vectors defining movement in the grid for word placement:
-    public WordGrid(int size) {
-        this.gridSize = size;
-        this.grid = new char[size][size]; // Initializing the grid to the specified size
-        this.wordList = new ArrayList<>();
-        clearGrid();
+    public WordGrid(int size, ArrayList<String> wordBank){
+        grid = new Character[size][size];
+        rand = new Random();
+        this.wordBank = wordBank;
     }
 
-    private void clearGrid() {
-        for (int i = 0; i < gridSize; i++) {
-            for (int j = 0; j < gridSize; j++) {
-                grid[i][j] = '.'; // Reset the grid cell to the default empty state
-             }
+    public void generateGrid(ArrayList<String> word_bank){
+        for(String word: word_bank){
+            int length = word.length();
+            startPos[0] = rand.nextInt(size);
+            startPos[1] = rand.nextInt(size);
+            place(word, startPos, length);
+        }
+        fillGrid();
+        totalCharCount += validCharCount;
+        density = (validCharCount)/(totalCharCount);
+        System.out.println(density);
+        while(density < 0.67){
+            resetGrid();
+            generateGrid(word_bank);
         }
     }
- }
- 
-    // Generates the grid with words and random letters
-    public void generateGrid() {
-        // Implementation will be added later
+    
+    public void place(String word,int[] start, int length){
+        int allocation = rand.nextInt(5);
+        switch(allocation){
+            case 1: 
+            placeHorizontal(word,start,length);
+            break;
+            case 2:
+            placeVertical(word,start,length);
+            break;
+            case 3:
+            placeDiagonalDown(word,start,length);
+            break;
+            case 4:
+            placeDiagonalUp(word,start,length);
+            break;
+            case 5:
+            placeReverse(word,start,length);
+            break;
+        }
     }
- 
-    // Checks if the current grid configuration is valid
-    public void checkGrid() {
-        // Implementation added later
+
+    public void placeHorizontal(String word, int[] start, int length){
+        int row = start[0];
+        int col = start[1];
+        boolean isEmpty = true;
+        if(col + length < size){
+            for(int i = 0; i < length; i++){
+                if(grid[row][col] != null){
+                    isEmpty = false;
+                }
+                col++;
+            }
+            row = start[0];
+            col = start[1];
+            if(isEmpty){
+                for(int i = 0; i < length; i++){
+                    grid[row][col] = word.charAt(i);
+                    col++;
+                    validCharCount++;
+                }
+                usedWords.add(word);
+            }
+        }
     }
- 
-    // Reveals the starting letter of a word on the grid
-    public void revealStartLetter() {
-        // Implementation  added later
+    public void placeVertical(String word, int[] start, int length){
+        int row = start[0];
+        int col = start[1];
+        boolean isEmpty = true;
+        if(row + length < size) {
+            for(int i = 0; i < length; i++){
+                if(grid[row][col] != null){
+                    isEmpty = false;
+                }
+                row++;
+            }
+            if(isEmpty){
+                row = start[0];
+                col = start[1];
+                for(int i = 0; i < length; i++){
+                    grid[row][col] = word.charAt(i);
+                    row++;
+                    validCharCount++;
+                }
+                usedWords.add(word);
+            }
+        }
     }
- 
-    // Places a word on the grid
-    public void placeWord(String word) {
-        // Implementation added later
+    public void placeDiagonalUp(String word, int[] start, int length){
+        int row = start[0];
+        int col = start[1];
+        boolean isEmpty = true;
+        if(row - length >= 0 && col + length < size){
+            for(int i = 0; i < length; i++){
+                if (grid[row][col] != null){
+                    isEmpty = false;
+                }
+                row--;
+                col++;
+            }
+            if(isEmpty){
+                row = start[0];
+                col = start[1];
+                for(int i = 0; i < length; i++){
+                    grid[row][col] = word.charAt(i);
+                    row--;
+                    col++;
+                    validCharCount++;
+                }
+                usedWords.add(word);
+            }
+        }
     }
- 
-    // Checks if the placement of a word on the grid is valid
-    public boolean checkPlacement(String word, int startX, int startY, String direction) {
-        // Implementation added later
-        return false;
+
+    public void placeDiagonalDown(String word, int[] start, int length){
+        int row = start[0];
+        int col = start[1];
+        boolean isEmpty = true;
+        if(row + length < size && col - length >= 0){
+            for(int i = 0; i < length; i++){
+                if (grid[row][col] != null){
+                    isEmpty = false;
+                }
+                row++;
+                col--;
+            }
+            if(isEmpty){
+                row = start[0];
+                col = start[1];
+                for(int i = 0; i < length; i++){
+                    grid[row][col] = word.charAt(i);
+                    row++;
+                    col--;
+                    validCharCount++;
+                }
+                usedWords.add(word);
+            }
+        }
     }
- 
-    // Checks if a word is found on the grid
-    public boolean checkWordFound(String word) {
-        // Implementation added later
-        return false;
+    public void placeReverse(String word, int[] start, int length){
+        int row = start[0];
+        int col = start[1];
+        boolean isEmpty = true;
+        if(col - length  >= 0){
+            for(int i = 0; i < length; i++){
+                if (grid[row][col] != null){
+                    isEmpty = false;
+                }
+                col--;
+            }
+            if(isEmpty){
+                row = start[0]; col = start[1];
+                for(int i = 0; i < length; i++){
+                    grid[row][col] = word.charAt(i);
+                    col--;
+                    validCharCount++;
+                }
+            }
+            usedWords.add(word);
+        }
     }
- 
-    // Highlights a word on the grid
-    public void highlightWord(String word) {
-        // Implementation to be added later
+
+    public void fillGrid(){
+        for(int i = 0; i < size; i++){
+            for(int j = 0; j < size; j++){
+                if(grid[i][j] == null){
+                    grid[i][j] = alphabet.get(rand.nextInt(26));
+                    totalCharCount++;
+                }
+            }
+        }
     }
- 
-    // Awards points for a word found
-    public int awardPoints(String word) {
-        // Implementation to be added later
-        return 0;
+
+    public void printGrid(){
+        for(Character[] row : grid){
+            for(Character c : row ){
+                System.out.print(c + " ");
+            }
+            System.out.println();
+        } 
     }
- 
-    // Getters and setters
-    public char[][] getGrid() {
-        return grid;
+
+    public void resetGrid(){
+        for(int i = 0; i < size; i ++){
+            for(int j = 0; j < size; j++){
+                grid[i][j] = null;
+            }
+        }
+        totalCharCount = 0;
+        validCharCount = 0;
     }
- 
-    public void setGrid(char[][] grid) {
-        this.grid = grid;
-    }
- 
-    public List<String> getWordList() {
-        return wordList;
-    }
- 
-    public void setWordList(List<String> wordList) {
-        this.wordList = wordList;
-    }
- 
-    public int getGridSize() {
-        return gridSize;
-    }
- 
-    public void setGridSize(int gridSize) {
-        this.gridSize = gridSize;
-    }
- 
-	// add more methods if necessary
- 
 }

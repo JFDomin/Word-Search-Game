@@ -2,6 +2,7 @@ package uta.cse3310;
 import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.Random;
 
 public class WordBank {
     private int startPosition;
