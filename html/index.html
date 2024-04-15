@@ -5,12 +5,60 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Word Search Game</title>
 </head>
+<label id="topMessage"></label>
 <body>
-
+<div style="display: none"id="table-container"></div>
 <h1 style="text-align: center"> Word Search Game</h1>
 
 <div id ="wordGrid"></div>
+<div style="display:flex;">
+    <div style="display:flex;flex-direction:column;width:20%"id = "Lobby">
+        <div>Lobby</div>
+        <label for="input-data">Enter nickname:</label>
+        <input type="text" id="input-data" placeholder="Enter nickname" oninput="handleChange(event)">
+        <button onclick="handleNickEnter()" >Join</button>
 
+    </div>
+
+
+    <div style="display:flex;flex-direction:column;width:80%;border: 1px solid black;padding: 20px;margin-left: 5px;justify-content: center;"id = "WaitingPlayers">
+        <div>Waiting Players</div>
+        <div style="display:flex;width: 80%;justify-content: space-around;">
+            <span>fer</span>
+            <span>josh</span>
+            <span>aaron</span>
+            <span>fabian</span>
+        </div>
+        <div style="display: flex;width: 30%;justify-content: space-between;padding: 0 5px;margin: 0 auto;">
+            <button style="width: auto;"onclick="readyPlayer()" >Ready Up</button>
+            <button style="width: auto;"onclick="startGame()" >Start Game</button>
+        </div>
+        
+    </div>
+</div>
+
+<script>
+    let nickname = "joshiepew";
+    function handleChange(event) {
+  // Get the input field value
+    var inputData = event.target.value;
+    
+  // Log the changed data
+    nickname = inputData;
+  // You can perform any further actions here, such as updating the UI or sending the data to a server.
+    }
+    function handleNickEnter(){
+        console.log(nickname);
+    }
+    function readyPlayer(){
+
+    }
+    function startGame(){
+
+    }
+</script>
+</body>
+<div id = "WaitingPlayers"></div>
 <script src="uidisplay.js"></script>
 
 <script>
@@ -22,6 +70,7 @@
 
     connection.onopen = function (evt) {
         console.log("open - Connection established");
+
     }
 connection.onclose = function (evt) {
     console.log("close");
@@ -32,9 +81,12 @@ connection.onmessage = function (evt) {
     msg = evt.data;
     const obj = JSON.parse(msg);
     if (obj.type == "wordGrid"){
-        displayGrid(obj.data);
+        console.log(obj.data);
+        //displayGrid(obj.data);
+        const tableContainer = document.getElementById('table-container');
+        //tableContainer.innerHTML = displayGrid(obj.data);
     }
-
+    //console.log(obj.data);
 };
     //console.log("Message received: " + msg);
     
