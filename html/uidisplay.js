@@ -5,7 +5,7 @@
  //   ["#", " ", " ", " ", " ", " ", " ", " ", " ", "#", ],
    // ["#", "#", "#", "#", "#", "#", "#", "#", "#", "#", ]
   //];
-  function displaygrid(wordGrid) {
+  function displayGrid(wordGrid) {
     const wordGridcontainer = document.getElementById("wordGrid");
     wordGridcontainer.innerHTML ="";
     const gridSizerow = 50;
