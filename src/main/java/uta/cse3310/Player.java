@@ -6,6 +6,12 @@ public class Player{
     public String nickname;
     public int playerScore;
     public String playerColor;
+    private boolean isReady;
+
+    public Player(String nickname) {
+        this.nickname = nickname;
+        this.isReady = false;
+    }
  
     public String getName() {
         return nickname; 
@@ -37,5 +43,13 @@ public class Player{
  
     public int getPlayerScore() {
         return playerScore;
+    }
+
+    public void setReady(boolean isReady) {
+        this.isReady = isReady;
+    }
+
+    public boolean isReady() {
+        return isReady;
     }
 }
