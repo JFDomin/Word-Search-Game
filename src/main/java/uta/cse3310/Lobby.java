@@ -2,12 +2,15 @@ package uta.cse3310;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set; 
+import java.util.HashSet;
 
 public class Lobby {
     private int numPlayers;
     private int playersWaiting;
     private boolean ready;
     private List<Player> players;
+    private Set<String> playerNames; 
 
     public Lobby() {
         numPlayers = 0;
@@ -19,13 +22,15 @@ public class Lobby {
     public void addPlayer(Player player) {
         if (playerNames.contains(player.getName())) //checking for uniqueness
         {
-            return false;
+            System.out.println("Player name is not unique. Choose a new name to enter the lobby");            
+            
+            return;
         }
         players.add(player);
         numPlayers++;
         playersWaiting++;
         checkLobby();
-        return true;
+        
     }
 
     public void removePlayer(Player player) {
