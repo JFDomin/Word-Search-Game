@@ -4,57 +4,109 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Word Search Game</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <label id="topMessage"></label>
 <body>
-<div style="display: none"id="table-container"></div>
-<h1 style="text-align: center"> Word Search Game</h1>
+<div style="display: flex"id="table-container"></div>
+<h1 style="text-align: center">Word Search Game</h1>
 
 <div id ="wordGrid"></div>
 <div style="display:flex;">
     <div style="display:flex;flex-direction:column;width:20%"id = "Lobby">
         <div>Lobby</div>
         <label for="input-data">Enter nickname:</label>
-        <input type="text" id="input-data" placeholder="Enter nickname" oninput="handleChange(event)">
-        <button onclick="handleNickEnter()" >Join</button>
-
+        <input type="text" id="input-data" placeholder="Enter nickname" onchange="handleChange(event)">
+        <button onclick="handleNickEnter()">Join</button>
+        <span id="error"></span>
     </div>
 
 
     <div style="display:flex;flex-direction:column;width:80%;border: 1px solid black;padding: 20px;margin-left: 5px;justify-content: center;"id = "WaitingPlayers">
-        <div>Waiting Players</div>
-        <div style="display:flex;width: 80%;justify-content: space-around;">
-            <span>john</span>
-            <span>josh</span>
-            <span>aaron</span>
-            <span>derrick</span>
+        <div id="waiting-text">Waiting for Players...</div>
+        <div style="display:flex;width: 80%;justify-content: space-around;" id="playerContainer">
         </div>
         <div style="display: flex;width: 30%;justify-content: space-between;padding: 0 5px;margin: 0 auto;">
-            <button style="width: auto;"onclick="readyPlayer()" >Ready Up</button>
-            <button style="width: auto;"onclick="startGame()" >Start Game</button>
+            <button id="ready-btn" style="width: auto;"onclick="readyPlayer()" disabled>Ready Up</button>
+            <button id="start-btn" style="width: auto;"onclick="startGame()" disabled >Start Game</button>
         </div>
-        
     </div>
 </div>
 
 <script>
-    let nickname = "josh";
+    let nickname = "";
+    let error = document.getElementById("error");
+
+    function handleMissingNickname(){
+        console.log("player missing nickname")
+        error.textContent = "Please enter a nickname."
+        error.style.color = "red"
+        return
+    }
     function handleChange(event) {
   // Get the input field value
-    var inputData = event.target.value;
-    
+    // var inputData = event.target.value;
+    // nickname = event.target.value;
   // Log the changed data
-    nickname = inputData;
+    // nickname = inputData;
   // You can perform any further actions here, such as updating the UI or sending the data to a server.
     }
     function handleNickEnter(){
-        console.log(nickname);
+        const nickname = document.getElementById("input-data").value
+        const readyButton = document.getElementById("ready-btn");
+        const startButton = document.getElementById("start-btn");
+        console.log('nickname', nickname)
+        if (!nickname) {
+            handleMissingNickname();
+        }
+        else {
+            connection.send(JSON.stringify({type: "join", data: nickname}));
+
+            const playerContainer = document.getElementById("playerContainer");
+            const playerDiv = document.createElement("div");
+            playerDiv.className = "player";
+            playerDiv.textContent = nickname;
+            playerContainer.appendChild(playerDiv);
+
+            // Update the text if there are multiple players
+            if (playerContainer.children.length === 1) {
+                const waitingText = document.getElementById("waiting-text");
+                waitingText.textContent = "Waiting for another player...";
+            }
+            if (playerContainer.children.length > 1) {
+                const waitingText = document.getElementById("waiting-text");
+                waitingText.textContent = "You are player x";
+            }
+
+            error.textContent = ""
+            console.log("player joined: ", nickname);
+            readyButton.disabled = false;
+            startButton.disabled = false;
+        }
+
     }
     function readyPlayer(){
+        const nickname = document.getElementById("input-data").value
+        // logic is not complete yet
+        if (!nickname) {
+            handleMissingNickname();
+        }
+        else {
+            connection.send(JSON.stringify({type: "ready", data: nickname}));
+            error.textContent = ""
+            console.log("player ready: ", nickname);
+        }
 
     }
     function startGame(){
-
+        if (!nickname) {
+            handleMissingNickname();
+        }
+        else {
+            connection.send(JSON.stringify({type: "startGame", data: nickname}));
+            console.log("game started by: ", nickname);
+            // implement logic for number of players somewhere in java
+        }
     }
 </script>
 </body>
@@ -65,31 +117,33 @@
     var connection = null;
     var serverUrl;
     serverUrl = "ws://" + window.location.hostname + ":9180";
+    document.getElementById("topMessage").innerHTML = "?";
     // Create the connection with the server
     connection = new WebSocket(serverUrl);
 
     connection.onopen = function (evt) {
         console.log("open - Connection established");
+        document.getElementById("topMessage").innerHTML = " "
 
     }
-connection.onclose = function (evt) {
-    console.log("close");
-    document.getElementById("topMessage").innerHTML = "Server Offline"
-}
-connection.onmessage = function (evt) {
-    var msg;
-    msg = evt.data;
-    const obj = JSON.parse(msg);
-    if (obj.type == "wordGrid"){
-        console.log(obj.data);
-        //displayGrid(obj.data);
-        const tableContainer = document.getElementById('table-container');
-        //tableContainer.innerHTML = displayGrid(obj.data);
+    connection.onclose = function (evt) {
+        console.log("close");
+        document.getElementById("topMessage").innerHTML = "Server Offline"
     }
-    //console.log(obj.data);
-};
+    connection.onmessage = function (evt) {
+        var msg;
+        msg = evt.data;
+        const obj = JSON.parse(msg);
+        if (obj.type == "wordGrid"){
+            console.log(obj.data);
+            //displayGrid(obj.data);
+            const tableContainer = document.getElementById('table-container');
+            tableContainer.innerHTML = displayGrid(obj.data);
+        }
+        //console.log(obj.data);
+    };
     //console.log("Message received: " + msg);
-    
+
     </script>
     <link rel="stylesheet" href="style.css">
     </body>
