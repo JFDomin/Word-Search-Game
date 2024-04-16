@@ -7,7 +7,7 @@ import java.util.Random;
 
 
 public class WordGrid {
-    final int size = 50;
+    int size;
     Character [][] grid = new Character[size][size];
     double validCharCount = 0;
     double totalCharCount = 0;
@@ -21,6 +21,7 @@ public class WordGrid {
     public WordGrid(int size, ArrayList<String> wordBank){
         grid = new Character[size][size];
         rand = new Random();
+        this.size = size;
         this.wordBank = wordBank;
     }
 
