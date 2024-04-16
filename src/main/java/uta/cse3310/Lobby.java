@@ -17,10 +17,15 @@ public class Lobby {
     }
 
     public void addPlayer(Player player) {
+        if (playerNames.contains(player.getName())) //checking for uniqueness
+        {
+            return false;
+        }
         players.add(player);
         numPlayers++;
         playersWaiting++;
         checkLobby();
+        return true;
     }
 
     public void removePlayer(Player player) {
