@@ -84,7 +84,10 @@ public class App extends WebSocketServer implements Runnable{
 
   private Instant startTime;
 
-  private WordGrid Grid; 
+  private WordGrid Grid;
+
+  int numPlayers = 0;
+  ArrayList<Player> players = new ArrayList<>(); 
 
   public App(int port) {
     super(new InetSocketAddress(port));
@@ -100,6 +103,7 @@ public class App extends WebSocketServer implements Runnable{
   @Override
   public void onOpen(WebSocket conn, ClientHandshake handshake) {
 
+    
     System.out.println(conn.getRemoteSocketAddress().getAddress().getHostAddress() + " connected");
     
      ServerEvent E = new ServerEvent();
@@ -126,10 +130,8 @@ public class App extends WebSocketServer implements Runnable{
         //ArrayList<Character> wordGrid = G.getwordgrid();
         String gridJson = gson.toJson(wordGrid);
         conn.send("{\"type\": \"wordGrid\",\"data\": "+ gridJson + "}");
-        System.out.println(gridJson);
+        //System.out.println(gridJson);
 
-        
-        //grid.getgrid();
   }
 
   @Override
@@ -142,35 +144,71 @@ public class App extends WebSocketServer implements Runnable{
 
   @Override
   public void onMessage(WebSocket conn, String message) {
-    System.out
-        .println("< " + Duration.between(startTime, Instant.now()).toMillis() + " " + "-" + " " + escape(message));
-      
+    
+    System.out.println(conn+" "+ message);
 
     // // Bring in the data from the webpage
     // // A UserEvent is all that is allowed at this point
      GsonBuilder builder = new GsonBuilder();
      Gson gson = builder.create();
-     //UserEvent U = gson.fromJson(message, UserEvent.class);
+     UserEvent U = gson.fromJson(message, UserEvent.class);
+     
 
+     if(U.button.equals("join")){
+      Player player1 = new Player(U.nickname);
+      players.add(player1);
+     }
+     for(Player player : players){
+      System.out.println(player.nickname);
+     }
+     if(U.button.equals("readyUp")){
+      for(Player p : players){
+        if(p.nickname.equals(U.nickname)){
+          if(p.isReady){
+            p.isReady = false;
+          }
+          else{
+            p.isReady = true;
+          }
+        }
+        System.out.println(p.nickname + " " + p.isReady);
+      }
+     }
+     
     // Update the running time
 
     // Get our Game Object
-     Game G = conn.getAttachment();
+     //Game G = conn.getAttachment();
      //G.Update(E);
 
     // send out the game state every time
     // to everyone
-     String jsonString;
-     jsonString = gson.toJson(G);
+     //String jsonString;
+     //jsonString = gson.toJson(G);
 
-     System.out
-         .println("> " + Duration.between(startTime, Instant.now()).toMillis() + " " + "*" + " " + escape(jsonString));
-     broadcast(jsonString);
+
+     //broadcast(jsonString);
   }
 
   @Override
   public void onMessage(WebSocket conn, ByteBuffer message) {
     System.out.println(conn + ": " + message);
+    // GsonBuilder builder = new GsonBuilder();
+    // Gson gson = builder.create();
+    // UserEvent U = gson.fromJson(message, UserEvent.class);
+    // System.out.println(U.Button);
+
+    // // Get our Game Object
+    // Game G = conn.getAttachment();
+    // G.Update(U);
+
+    // // send out the game state every time
+    // // to everyone
+    // String jsonString;
+    // jsonString = gson.toJson(G);
+
+    // System.out.println(jsonString);
+    // broadcast(jsonString);
   }
 
   @Override
