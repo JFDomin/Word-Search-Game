@@ -8,7 +8,7 @@
 </head>
 <label id="topMessage"></label>
 <body>
-<div style="display: flex"id="table-container"></div>
+<div style="display: flex;width: 100%;"id="table-container"></div>
 <h1 style="text-align: center">Word Search Game</h1>
 
 <div id ="wordGrid"></div>
@@ -34,6 +34,13 @@
 </div>
 
 <script>
+     class UserEvent {
+     GameId; // the game ID on the server
+     PlayerIdx; // either PLAYER1 PLAYER2 PLYAER 3 or PLAYER4
+     button; //what button they pressed 
+     nickname; //the nickname entered if it is join button
+     ready;
+}
     let nickname = "";
     let error = document.getElementById("error");
 
@@ -49,7 +56,6 @@
     // nickname = event.target.value;
   // Log the changed data
     // nickname = inputData;
-  // You can perform any further actions here, such as updating the UI or sending the data to a server.
     }
     function handleNickEnter(){
         const nickname = document.getElementById("input-data").value
@@ -60,8 +66,12 @@
             handleMissingNickname();
         }
         else {
-            connection.send(JSON.stringify({type: "join", data: nickname}));
-
+            U = new UserEvent;
+            buttonType = "join";
+            U.nickname = nickname;
+            U.button = buttonType;
+            connection.send(JSON.stringify(U));
+            console.log(JSON.stringify(U));
             const playerContainer = document.getElementById("playerContainer");
             const playerDiv = document.createElement("div");
             playerDiv.className = "player";
@@ -75,7 +85,7 @@
             }
             if (playerContainer.children.length > 1) {
                 const waitingText = document.getElementById("waiting-text");
-                waitingText.textContent = "You are player x";
+                waitingText.textContent = "Waiting for Players to ready up";
             }
 
             error.textContent = ""
@@ -92,7 +102,10 @@
             handleMissingNickname();
         }
         else {
-            connection.send(JSON.stringify({type: "ready", data: nickname}));
+            buttonType = "readyUp";
+            U.button = buttonType;
+            connection.send(JSON.stringify(U));
+            console.log(JSON.stringify(U));
             error.textContent = ""
             console.log("player ready: ", nickname);
         }
@@ -103,7 +116,6 @@
             handleMissingNickname();
         }
         else {
-            connection.send(JSON.stringify({type: "startGame", data: nickname}));
             console.log("game started by: ", nickname);
             // implement logic for number of players somewhere in java
         }

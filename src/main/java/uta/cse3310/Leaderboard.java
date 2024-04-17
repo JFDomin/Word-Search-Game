@@ -5,14 +5,14 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+ 
 public class Leaderboard {
     private List<Player> players;
-
+ 
     public Leaderboard() {
         this.players = new ArrayList<>();
     }
-
+ 
     public void displayLeaderboard() { // SREQ007
         System.out.println("Leaderboard:");
         System.out.println("Rank\tName\tScore");
@@ -22,7 +22,7 @@ public class Leaderboard {
             rank++;
         }
     }
-
+ 
     public void updateScore(int playerID, String playerName, int newScore, String playerColor) { // SREQ014
         for (Player player : players) {
             if (player.getName().equals(playerName)) {
@@ -31,11 +31,11 @@ public class Leaderboard {
                 return;
             }
         }
-      
-        players.add(new Player(playerID, playerName, newScore, playerColor)); 
+     
+        //players.add(new Player(playerID, playerName, newScore, playerColor));
         sortPlayerByScore();
     }
-
+ 
     public int getScore(String playerName) {
         for (Player player : players) {
             if (player.getName().equals(playerName)) {
@@ -44,7 +44,7 @@ public class Leaderboard {
         }
         return 0; // Player not found
     }
-
+ 
     public Map<String, Integer> getAllScores() {
         Map<String, Integer> allScores = new HashMap<>();
         for (Player player : players) {
@@ -52,17 +52,17 @@ public class Leaderboard {
         }
         return allScores;
     }
-
-    public int getRank(String playerName) { 
+ 
+    public int getRank(String playerName) {
         for (int i = 0; i < players.size(); i++) {
             if (players.get(i).getName().equals(playerName)) {
-                return i + 1; 
+                return i + 1;
             }
         }
         return -1; // Player not found
     }
-
-    public void sortPlayerByScore() { 
+ 
+    public void sortPlayerByScore() {
         Collections.sort(players, Comparator.comparingInt(Player::getPlayerScore).reversed());
     }
 }
