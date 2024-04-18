@@ -6,17 +6,18 @@ import java.util.Map;
 public class WordSearchGame{
     public int gameID;
     public ArrayList<Player> players;
+    PlayerType player;
     public double gridTimer;
     public double gameTimer;
    public GameState gameState;
    public Map<Player, Integer> scores;
    public int maxPlayers;
    public List<String> currentWords;
-
+   int numPlayers = 0;
     ArrayList<String> words = WordBank.readFileIntoArray("src/main/java/uta/cse3310/filtered_word 1.txt");
     ArrayList<String> found = new ArrayList<>();
     ArrayList<String> wordBank = WordBank.wordBank(found, words);
-    WordGrid grid = new WordGrid(50,wordBank);
+    WordGrid grid = new WordGrid(15,wordBank);
    //private WordGrid grid = new WordGrid(50,50);
    
  //   public static void main(String[] args){
@@ -34,13 +35,7 @@ public class WordSearchGame{
 
     
     public void startGame() {
-        //ArrayList<String> words = WordBank.readFileIntoArray("src/main/java/uta/cse3310/filtered_word 1.txt");
-       // ArrayList<String> found = new ArrayList<>();
-      //  ArrayList<String> wordBank = WordBank.wordBank(found, words);
-      //  WordGrid grid = new WordGrid(50,wordBank);
         grid.generateGrid(wordBank);
-        grid.fillGrid();
-        grid.printGrid();
     }
        public Character[][] getwordgrid(){ 
         //WordGrid grid = new WordGrid(50,wordBank);      

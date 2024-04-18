@@ -112,11 +112,16 @@
 
     }
     function startGame(){
+        const nickname = document.getElementById("input-data").value;
         if (!nickname) {
             handleMissingNickname();
         }
         else {
             console.log("game started by: ", nickname);
+            buttonType = "startGame";
+            U.button = buttonType;
+            connection.send(JSON.stringify(U));
+            console.log(JSON.stringify(U));
             // implement logic for number of players somewhere in java
         }
     }
@@ -127,8 +132,7 @@
 
 <script>
     var connection = null;
-    var serverUrl;
-    serverUrl = "ws://" + window.location.hostname + ":9180";
+    var serverUrl = "ws://" + window.location.hostname +":"+ (parseInt(location.port) + 100);
     document.getElementById("topMessage").innerHTML = "?";
     // Create the connection with the server
     connection = new WebSocket(serverUrl);
@@ -145,12 +149,25 @@
     connection.onmessage = function (evt) {
         var msg;
         msg = evt.data;
+        console.log("Message received: " + msg);
         const obj = JSON.parse(msg);
         if (obj.type == "wordGrid"){
             console.log(obj.data);
             //displayGrid(obj.data);
             const tableContainer = document.getElementById('table-container');
             tableContainer.innerHTML = displayGrid(obj.data);
+        }
+        if('YouAre' in obj){
+            if(obj.YouAre == "PLAYER1"){
+                idx = 0;
+            }
+            else if (obj.YouAre == "PLAYER2"){
+                idx = 2;
+            }
+            else if(obj.YouAre == "PLAYER3"){
+                idx = 3;
+            }
+            console.log(msg);
         }
         //console.log(obj.data);
     };

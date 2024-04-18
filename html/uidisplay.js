@@ -12,7 +12,7 @@
         html += '<tr>';
 
         row.forEach(function(cell){
-          html +='<td style = "border: 1px solid black;">' + cell + '</td>';
+          html +='<td style = "border: 1px solid black;text-align: center;">' + cell + '</td>';
         });
 
         html += '</tr>';

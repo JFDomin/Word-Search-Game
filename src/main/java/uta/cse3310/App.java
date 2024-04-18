@@ -69,7 +69,7 @@ public class App extends WebSocketServer implements Runnable{
 
   // All games currently underway on this server are stored in
   // the vector ActiveGames
-  private Vector<WordSearchGame> Game = new Vector<WordSearchGame>();
+  private Vector<WordSearchGame> ActiveGames = new Vector<WordSearchGame>();
    private WordGrid wordGrid;
   public static ArrayList<App> clientHandlers = new ArrayList<>();
   private WebSocket websocket;
@@ -78,16 +78,19 @@ public class App extends WebSocketServer implements Runnable{
   private BufferedWriter bufferedWriter;
   private String clientUsername;
 
-  private int GameId = 0;
-
-  private int connectionId = 0;
-
-  private Instant startTime;
 
   private WordGrid Grid;
 
   int numPlayers = 0;
-  ArrayList<Player> players = new ArrayList<>(); 
+  int numPlayersReady = 0;
+  ArrayList<Player> players = new ArrayList<>();
+  
+  //WordSearchGame[] ActiveGames = new WordSearchGame[5];
+  private int GameId = 1;
+
+  private int connectionId = 0;
+
+  private Instant startTime;
 
   public App(int port) {
     super(new InetSocketAddress(port));
@@ -103,15 +106,73 @@ public class App extends WebSocketServer implements Runnable{
   @Override
   public void onOpen(WebSocket conn, ClientHandshake handshake) {
 
-    
+    connectionId++;
     System.out.println(conn.getRemoteSocketAddress().getAddress().getHostAddress() + " connected");
-    
      ServerEvent E = new ServerEvent();
+     WordSearchGame G = null;
+    
+     for(WordSearchGame i: ActiveGames){
+      if(i.player == uta.cse3310.PlayerType.PLAYER1 || i.player == uta.cse3310.PlayerType.PLAYER2 || i.player == uta.cse3310.PlayerType.PLAYER3){
+        G = i;
+        System.out.println("Match found");
+      }
+     }
+      
+      //no matches? create new game
+      if(G == null){
+        if(ActiveGames.size() <= 5){
+          G = new WordSearchGame();
+          G.gameID = GameId;
+          GameId++;
+          G.player = PlayerType.PLAYER1;
+          G.numPlayers++;
+          ActiveGames.add(G);
+          System.out.println("creating new game");
+          G.startGame();
+          System.out.println("G.players is " + G.player);
+          Gson gson = new Gson();
+          Character[][] wordGrid = G.getwordgrid();
+          String gridJson = gson.toJson(wordGrid);
+          conn.send("{\"type\": \"wordGrid\",\"data\": "+ gridJson + "}");
+        }
+      }
+      else{
+          System.out.println("not a new game");
+          switch(G.numPlayers){
+            case 1:
+              G.player = PlayerType.PLAYER2;
+              G.numPlayers++;
+              break;
+            case 2:
+              G.player = PlayerType.PLAYER3;
+              G.numPlayers++;
+              break;
+            case 3:
+              G.player = PlayerType.PLAYER4;
+              G.numPlayers++;
+              break;
+          }
+          Gson gson = new Gson();
+          Character[][] wordGrid = G.getwordgrid();
+          String gridJson = gson.toJson(wordGrid);
+          conn.send("{\"type\": \"wordGrid\",\"data\": "+ gridJson + "}");
+      }
+      E.YouAre = G.player;
+      E.GameId = G.gameID;
+      System.out.println(E.YouAre + " " + E.GameId);
+      // allows the websocket to give us the Game when a message arrives..
+    // it stores a pointer to G, and will give that pointer back to us
+    // when we ask for it
+      conn.setAttachment(G);
+
      Gson gson = new Gson();
      String jsonString = gson.toJson(E);
      conn.send(jsonString);
+     // The state of the game has changed, so lets send it to everyone
+    jsonString = gson.toJson(G);
+    broadcast(jsonString);
     // // search for a game needing a player
-     WordSearchGame G = new WordSearchGame();
+     //WordSearchGame G = new WordSearchGame();
      //WordGrid grid = new Word();
     conn.setAttachment(G);
        System.out.println(" creating a new Game");
@@ -123,17 +184,16 @@ public class App extends WebSocketServer implements Runnable{
      //       + escape(jsonString));
    //  System.out
    //      .println("< " + Duration.between(startTime, Instant.now()).toMillis() + " " + "*" + " " + escape(jsonString));
-        broadcast(jsonString);
-        G.startGame();
-        G.getwordgrid();
-        Character[][] wordGrid = G.getwordgrid();
+        // broadcast(jsonString);
+        // G.startGame();
+        // G.getwordgrid();
+        // Character[][] wordGrid = G.getwordgrid();
         //ArrayList<Character> wordGrid = G.getwordgrid();
-        String gridJson = gson.toJson(wordGrid);
-        conn.send("{\"type\": \"wordGrid\",\"data\": "+ gridJson + "}");
+        // String gridJson = gson.toJson(wordGrid);
+        // conn.send("{\"type\": \"wordGrid\",\"data\": "+ gridJson + "}");
         //System.out.println(gridJson);
-
   }
-
+  
   @Override
   public void onClose(WebSocket conn, int code, String reason, boolean remote) {
     System.out.println(conn + " has closed");
@@ -157,22 +217,32 @@ public class App extends WebSocketServer implements Runnable{
      if(U.button.equals("join")){
       Player player1 = new Player(U.nickname);
       players.add(player1);
+      numPlayers++;
      }
-     for(Player player : players){
-      System.out.println(player.nickname);
-     }
-     if(U.button.equals("readyUp")){
+     else if(U.button.equals("readyUp")){
       for(Player p : players){
         if(p.nickname.equals(U.nickname)){
           if(p.isReady){
             p.isReady = false;
+            numPlayersReady--;
           }
           else{
             p.isReady = true;
+            numPlayersReady++;
           }
         }
         System.out.println(p.nickname + " " + p.isReady);
       }
+      }
+      else if(U.button.equals("startGame")){
+        System.out.println(numPlayers + " ready: " + numPlayersReady);
+        //this is where a checklobby would be called to see number of ready players
+        //if >=2 start the game 
+        //allPlayerReady will return true if every player is ready and then we can call startGame()
+        if(numPlayersReady >=2 && numPlayers == numPlayersReady/*allPlayersReady()*/){
+            System.out.println("Enough players to start game");
+            //implement
+        }
      }
      
     // Update the running time
@@ -244,14 +314,14 @@ public class App extends WebSocketServer implements Runnable{
   public static void main(String[] args) {
 
     // Set up the http server
-    int port = 9080;
+    int port = 9016;
     HttpServer H = new HttpServer(port, "./html");
     H.start();
     System.out.println("http Server started on port: " + port);
 
     // create and start the websocket server
 
-    port = 9180;
+    port = 9116;
     App A = new App(port);
     A.setReuseAddr(true);
     A.start();
