@@ -6,7 +6,7 @@
    // ["#", "#", "#", "#", "#", "#", "#", "#", "#", "#", ]
   //];
   const playerColors = ['#1eff00', '#ff0000', '#0000ff', '#ffff00'];
-  function setPlayerColors(playerColors) {
+  function setPlayerColors(playerColors) {v
     document.documentElement.style.setProperty('--player1-color', playerColors[0]);
     document.documentElement.style.setProperty('--player2-color', playerColors[1]);
     document.documentElement.style.setProperty('--player3-color', playerColors[2]);
@@ -70,4 +70,47 @@ function page2(){
 document.getElementById("page1").style.display = "none";
 document.getElementById("page2").style.display = "block";
 document.getElementById("page2").innerHTML = displayGrid();
+}
+
+//connect chat to websocket
+const server_url = "ws://" + window.location.hostname + ":" + (parseInt(location.port)+100);
+const connection = new WebSocket(server_url);
+
+connection.onopen = function () {
+  console.log(" chat connection established.");
+};
+
+connection.onmessage = function (event) {
+  const data = JSON.parse(event.data);
+  if (data.type === "chat") {
+    displayChatMessage(data.sender,data.message);
+  } else {
+    console.log("recieved message: ", data);
+  }
+};
+
+connection.onerror = function (error) {
+  console.error("websocket error: ",error);
+};
+//sending message
+function sendMessage() {
+  const input_element = document.getElementById("chat-input");
+  const message = input_element.ariaValueMax.trim();
+
+  if (message !== "") {
+    connection.send(JSON,stringify({
+      type: "chat",
+      sender: "Me",
+      message: message
+    }));
+    input_element.value = "";
+  }
+}
+
+//displaying message
+function displayChatMessage(sender, message) {
+  const chatMessages = document.getElementById("chat-input");
+  const message_element = document.createElement("div");
+  message_element.textContent = sender + ": " + message;
+  chatMessages.appendChild(message_element);
 }

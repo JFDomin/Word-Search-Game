@@ -11,12 +11,14 @@ public class Lobby {
     private boolean ready;
     private List<Player> players;
     private Set<String> playerNames; 
+    private Chat chat;
 
     public Lobby() {
         numPlayers = 0;
         playersWaiting = 0;
         ready = false;
         players = new ArrayList<>();
+        chat = new Chat();
     }
 
     public void addPlayer(Player player) {
@@ -87,5 +89,13 @@ public class Lobby {
             }
         }
         return true;
+    }
+
+    public void sendMessagetoChat(Player player,String message){
+        chat.sendMessage(player.getName(),message);
+    }
+    
+    public ArrayList<String> receiveMessagesfromChat(){
+        return chat.receiveMessages();
     }
 }

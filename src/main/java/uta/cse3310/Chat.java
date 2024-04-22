@@ -12,10 +12,11 @@ public class Chat {
     }
 
     // Send a message to the chat
-    public void sendMessage(String message) {
+    public void sendMessage(String playerName, String message) {
         if (message != null && !message.trim().isEmpty()) {
             String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
             messages.add(timestamp + " " + message);
+            message.add(playerName + ": " + message);
         }
     }
 
