@@ -16,7 +16,7 @@ public class Chat {
         if (message != null && !message.trim().isEmpty()) {
             String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
             messages.add(timestamp + " " + message);
-            message.add(playerName + ": " + message);
+            messages.add(playerName + ": " + message);
         }
     }
 

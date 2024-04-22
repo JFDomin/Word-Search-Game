@@ -73,8 +73,8 @@ document.getElementById("page2").innerHTML = displayGrid();
 }
 
 //connect chat to websocket
-const server_url = "ws://" + window.location.hostname + ":" + (parseInt(location.port)+100);
-const connection = new WebSocket(server_url);
+
+const connection = new WebSocket("ws://localhost:9116");
 
 connection.onopen = function () {
   console.log(" chat connection established.");
