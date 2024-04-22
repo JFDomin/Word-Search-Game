@@ -8,10 +8,11 @@
 </head>
 <label id="topMessage"></label>
 <body>
-<div style="display: flex;width: 100%;"id="table-container"></div>
+<div id = "page1">
+    <div id="table-container"style="display: flex;width: 100%";> </div>
+    <div style="display: flex;width: 100%;"id="table-container"></div>
 <h1 style="text-align: center">Word Search Game</h1>
 
-<div id ="wordGrid"></div>
 <div style="display:flex;">
     <div style="display:flex;flex-direction:column;width:20%"id = "Lobby">
         <div>Lobby</div>
@@ -28,9 +29,15 @@
         </div>
         <div style="display: flex;width: 30%;justify-content: space-between;padding: 0 5px;margin: 0 auto;">
             <button id="ready-btn" style="width: auto;"onclick="readyPlayer()" disabled>Ready Up</button>
-            <button id="start-btn" style="width: auto;"onclick="startGame()" disabled >Start Game</button>
+            <button id="start-btn" style="width: auto;"onclick="startGame()" disabled>Start Game</button>
+            
         </div>
     </div>
+</div>
+</div>
+<div id= "page2" style = "display: none;">
+
+
 </div>
 
 <script>
@@ -77,6 +84,11 @@
             playerDiv.className = "player";
             playerDiv.textContent = nickname;
             playerContainer.appendChild(playerDiv);
+
+
+            const playerIndex = players.length + 1;
+            const playerColor = playerColors["PLAYER" + playerIndex];
+            playerDiv.style.backgroundColor = playerColor;
 
             // Update the text if there are multiple players
             if (playerContainer.children.length === 1) {
@@ -160,6 +172,7 @@
         if('YouAre' in obj){
             if(obj.YouAre == "PLAYER1"){
                 idx = 0;
+                setPlayerColor(playerColor);
             }
             else if (obj.YouAre == "PLAYER2"){
                 idx = 2;
