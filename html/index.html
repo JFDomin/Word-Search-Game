@@ -9,16 +9,16 @@
 <label id="topMessage"></label>
 <body>
 <div id = "page1">
+    <h1 style="text-align: center">Word Search Game</h1>
     <div id="table-container"style="display: flex;width: 100%";> </div>
     <div style="display: flex;width: 100%;"id="table-container"></div>
-<h1 style="text-align: center">Word Search Game</h1>
 
 <div style="display:flex;">
     <div style="display:flex;flex-direction:column;width:20%"id = "Lobby">
         <div>Lobby</div>
         <label for="input-data">Enter nickname:</label>
         <input type="text" id="input-data" placeholder="Enter nickname" onchange="handleChange(event)">
-        <button onclick="handleNickEnter()">Join</button>
+        <button id = "join-button" onclick="handleNickEnter()">Join</button>
         <span id="error"></span>
     </div>
 
@@ -41,6 +41,7 @@
 </div>
 
 <script>
+    var gameid;
      class UserEvent {
      GameId; // the game ID on the server
      PlayerIdx; // either PLAYER1 PLAYER2 PLYAER 3 or PLAYER4
@@ -58,17 +59,14 @@
         return
     }
     function handleChange(event) {
-  // Get the input field value
-    // var inputData = event.target.value;
-    // nickname = event.target.value;
-  // Log the changed data
-    // nickname = inputData;
     }
     function handleNickEnter(){
         const nickname = document.getElementById("input-data").value
-        const readyButton = document.getElementById("ready-btn");
-        const startButton = document.getElementById("start-btn");
-        console.log('nickname', nickname)
+        const joinButton = document.getElementById("join-button");
+        // const readyButton = document.getElementById("ready-btn");
+        // const startButton = document.getElementById("start-btn");
+        console.log('nickname', nickname);
+        console.log(gameid);
         if (!nickname) {
             handleMissingNickname();
         }
@@ -77,33 +75,33 @@
             buttonType = "join";
             U.nickname = nickname;
             U.button = buttonType;
+            U.GameId = gameid;
             connection.send(JSON.stringify(U));
             console.log(JSON.stringify(U));
-            const playerContainer = document.getElementById("playerContainer");
-            const playerDiv = document.createElement("div");
-            playerDiv.className = "player";
-            playerDiv.textContent = nickname;
-            playerContainer.appendChild(playerDiv);
+
+            error.textContent = "";
+            console.log("player joined: ", nickname);
+            joinButton.disabled = true;
+            // const playerContainer = document.getElementById("playerContainer");
+            // const playerDiv = document.createElement("div");
+            // playerDiv.className = "player";
+            // playerDiv.textContent = nickname;
+            // playerContainer.appendChild(playerDiv);
 
 
-            const playerIndex = players.length + 1;
-            const playerColor = playerColors["PLAYER" + playerIndex];
-            playerDiv.style.backgroundColor = playerColor;
+            // const playerIndex = players.length + 1;
+            // const playerColor = playerColors["PLAYER" + playerIndex];
+            // playerDiv.style.backgroundColor = playerColor;
 
             // Update the text if there are multiple players
-            if (playerContainer.children.length === 1) {
-                const waitingText = document.getElementById("waiting-text");
-                waitingText.textContent = "Waiting for another player...";
-            }
-            if (playerContainer.children.length > 1) {
-                const waitingText = document.getElementById("waiting-text");
-                waitingText.textContent = "Waiting for Players to ready up";
-            }
-
-            error.textContent = ""
-            console.log("player joined: ", nickname);
-            readyButton.disabled = false;
-            startButton.disabled = false;
+            // if (playerContainer.children.length === 1) {
+            //     const waitingText = document.getElementById("waiting-text");
+            //     waitingText.textContent = "Waiting for another player...";
+            // }
+            // if (playerContainer.children.length > 1) {
+            //     const waitingText = document.getElementById("waiting-text");
+            //     waitingText.textContent = "Waiting for Players to ready up";
+            // }
         }
 
     }
@@ -116,6 +114,8 @@
         else {
             buttonType = "readyUp";
             U.button = buttonType;
+            U.GameId = gameid;
+            U.nickname = nickname;
             connection.send(JSON.stringify(U));
             console.log(JSON.stringify(U));
             error.textContent = ""
@@ -132,6 +132,7 @@
             console.log("game started by: ", nickname);
             buttonType = "startGame";
             U.button = buttonType;
+            U.GameId = gameid;
             connection.send(JSON.stringify(U));
             console.log(JSON.stringify(U));
             // implement logic for number of players somewhere in java
@@ -159,20 +160,33 @@
         document.getElementById("topMessage").innerHTML = "Server Offline"
     }
     connection.onmessage = function (evt) {
+        const joinButton = document.getElementById("join-button");
         var msg;
         msg = evt.data;
         console.log("Message received: " + msg);
         const obj = JSON.parse(msg);
+        if('NotUnique' === obj ){
+            joinButton.disabled = false;
+            error.textContent = "Name not Unique";
+            error.style.color = "red";
+            return;
+        }
+        else if('CantStart' === obj){
+            error.textContent = "Not Enough Players Ready";
+            error.style.color = "red";
+            return;
+        }
         if (obj.type == "wordGrid"){
             console.log(obj.data);
             //displayGrid(obj.data);
             const tableContainer = document.getElementById('table-container');
             tableContainer.innerHTML = displayGrid(obj.data);
+            document.getElementById('table-container').style.display = 'none';
         }
         if('YouAre' in obj){
             if(obj.YouAre == "PLAYER1"){
-                idx = 0;
-                setPlayerColor(playerColor);
+                idx = 1;
+                //setPlayerColor(playerColor);
             }
             else if (obj.YouAre == "PLAYER2"){
                 idx = 2;
@@ -180,11 +194,58 @@
             else if(obj.YouAre == "PLAYER3"){
                 idx = 3;
             }
+            else{
+                idx = 4;
+            }
+            gameid = obj.GameId;
             console.log(msg);
         }
-        //console.log(obj.data);
+                //pay attention to only this game 
+                if(gameid === obj.GameId){
+            if ('playerList' in obj && Array.isArray(obj.playerList)) {
+            console.log("got player list");
+            //get the gameid out of the message specifically to update if gameid == to the msg gameid
+            //this seperates the display of each game
+            updatePlayerList(obj.playerList);
+            }
+            else if ('ActualGameStart' in obj){
+                document.getElementById('Lobby').style.display = 'none';
+                document.getElementById('table-container').style.display = 'block';
+                document.getElementById('WaitingPlayers').style.display = 'none';
+            }
+        }
+    }
+    
+    function updatePlayerList(playerList){
+        const playerContainer = document.getElementById("playerContainer");
+        const waitingText = document.getElementById("waiting-text");
+        const readyButton = document.getElementById("ready-btn");
+        const startButton = document.getElementById("start-btn");
+        
+        playerContainer.innerHTML = ""; // Clear existing player list
+        
+        playerList.forEach(function(player) {
+            const playerDiv = document.createElement("div");
+            playerDiv.className = "player";
+            playerDiv.textContent = player.nickname;
+            if (player.isReady) {
+            playerDiv.style.color = 'green';
+            }
+            playerContainer.appendChild(playerDiv);
+        });
+        
+        if (playerList.length === 1) {
+            waitingText.textContent = "Waiting for another player...";
+            readyButton.disabled = false; // Disable ready button when there's only one player
+            startButton.disabled = true; // Disable start button when there's only one player
+        } else {
+            waitingText.textContent = "Waiting for Players to ready up";
+            readyButton.disabled = false;
+            startButton.disabled = false;
+        }
+        
     };
-    //console.log("Message received: " + msg);
+  
 
     </script>
     <link rel="stylesheet" href="style.css">

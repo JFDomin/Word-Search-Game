@@ -215,4 +215,7 @@ public class WordGrid {
         validCharCount = 0;
         usedWords.clear();
     }
+    public void getStats(){
+        
+    }
 }

@@ -15,7 +15,7 @@ public class WordBank {
         try(BufferedReader reader = new BufferedReader(new FileReader(FileName))){
             String line;
             while((line = reader.readLine()) != null){
-                if(line.length() > 2)
+                if(line.length() > 3)
                 {
                     words.add(line.toLowerCase());
                 }

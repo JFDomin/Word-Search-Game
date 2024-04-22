@@ -84,8 +84,8 @@ public class App extends WebSocketServer implements Runnable{
   int numPlayers = 0;
   int numPlayersReady = 0;
   ArrayList<Player> players = new ArrayList<>();
+  ArrayList<String> playerNames = new ArrayList<>();
   
-  //WordSearchGame[] ActiveGames = new WordSearchGame[5];
   private int GameId = 1;
 
   private int connectionId = 0;
@@ -112,7 +112,7 @@ public class App extends WebSocketServer implements Runnable{
      WordSearchGame G = null;
     
      for(WordSearchGame i: ActiveGames){
-      if(i.player == uta.cse3310.PlayerType.PLAYER1 || i.player == uta.cse3310.PlayerType.PLAYER2 || i.player == uta.cse3310.PlayerType.PLAYER3){
+      if((i.player == uta.cse3310.PlayerType.PLAYER1 || i.player == uta.cse3310.PlayerType.PLAYER2 || i.player == uta.cse3310.PlayerType.PLAYER3) && i.isStarted != true){
         G = i;
         System.out.println("Match found");
       }
@@ -141,17 +141,15 @@ public class App extends WebSocketServer implements Runnable{
           switch(G.numPlayers){
             case 1:
               G.player = PlayerType.PLAYER2;
-              G.numPlayers++;
               break;
             case 2:
               G.player = PlayerType.PLAYER3;
-              G.numPlayers++;
               break;
             case 3:
               G.player = PlayerType.PLAYER4;
-              G.numPlayers++;
               break;
           }
+          G.numPlayers++;
           Gson gson = new Gson();
           Character[][] wordGrid = G.getwordgrid();
           String gridJson = gson.toJson(wordGrid);
@@ -171,27 +169,14 @@ public class App extends WebSocketServer implements Runnable{
      // The state of the game has changed, so lets send it to everyone
     jsonString = gson.toJson(G);
     broadcast(jsonString);
-    // // search for a game needing a player
-     //WordSearchGame G = new WordSearchGame();
-     //WordGrid grid = new Word();
+  
     conn.setAttachment(G);
-       System.out.println(" creating a new Game");
-        broadcast(jsonString);
-        //G.startGame();
-     conn.setAttachment(G);
-   // System.out
-    //     .println("> " + Duration.between(startTime, Instant.now()).toMillis() + " " + connectionId + " "
-     //       + escape(jsonString));
-   //  System.out
-   //      .println("< " + Duration.between(startTime, Instant.now()).toMillis() + " " + "*" + " " + escape(jsonString));
-        // broadcast(jsonString);
-        // G.startGame();
-        // G.getwordgrid();
-        // Character[][] wordGrid = G.getwordgrid();
-        //ArrayList<Character> wordGrid = G.getwordgrid();
-        // String gridJson = gson.toJson(wordGrid);
-        // conn.send("{\"type\": \"wordGrid\",\"data\": "+ gridJson + "}");
-        //System.out.println(gridJson);
+    broadcast(jsonString);
+    conn.setAttachment(G);
+    //made this G.players instead of players
+    String playerListJson = gson.toJson(G.players);
+    String playerListMessage = "{\"GameId\": " + G.gameID + ", \"playerList\": " + playerListJson + "}";
+    conn.send(playerListMessage);
   }
   
   @Override
@@ -215,70 +200,119 @@ public class App extends WebSocketServer implements Runnable{
      
 
      if(U.button.equals("join")){
-      Player player1 = new Player(U.nickname);
-      players.add(player1);
-      numPlayers++;
-     }
-     else if(U.button.equals("readyUp")){
-      for(Player p : players){
-        if(p.nickname.equals(U.nickname)){
-          if(p.isReady){
-            p.isReady = false;
-            numPlayersReady--;
-          }
-          else{
-            p.isReady = true;
-            numPlayersReady++;
+      if(players.size() == 0){
+        Player player1 = new Player(U.nickname);
+        players.add(player1);
+        playerNames.add(player1.nickname);
+        for(WordSearchGame G : ActiveGames){
+        if(G.gameID == U.GameId){
+          G.players.add(player1);
+          break;
+        }
+      }
+      }
+      else{
+        if(!playerNames.contains(U.nickname)){
+          Player player1 = new Player(U.nickname);
+          players.add(player1);
+          playerNames.add(player1.nickname);
+          for(WordSearchGame G : ActiveGames){
+            if(G.gameID == U.GameId){
+              G.players.add(player1);
+            break;
+            }
           }
         }
-        System.out.println(p.nickname + " " + p.isReady);
+        else{
+          String error = gson.toJson("NotUnique");
+          conn.send(error);
+          System.out.println("Name not unique");
+        }
       }
+      broadcastPlayerList(U.GameId);
+     }
+     else if(U.button.equals("readyUp")){
+      for(WordSearchGame G: ActiveGames){
+        if(G.gameID == U.GameId){
+          for(Player p: G.players){
+            if(p.nickname.equals(U.nickname)){
+              if(p.isReady){
+                p.isReady = false;
+                G.numPlayersReady--;
+                System.out.println("ready = false " + p.nickname);
+              }
+              else{
+                p.isReady = true;
+                System.out.println("ready = true " +  p.nickname);
+                G.numPlayersReady++;
+              }
+            }
+          }
+          break;
+        }
+      }
+      //added this line
+      broadcastPlayerList(U.GameId);
       }
       else if(U.button.equals("startGame")){
-        System.out.println(numPlayers + " ready: " + numPlayersReady);
-        //this is where a checklobby would be called to see number of ready players
-        //if >=2 start the game 
-        //allPlayerReady will return true if every player is ready and then we can call startGame()
-        if(numPlayersReady >=2 && numPlayers == numPlayersReady/*allPlayersReady()*/){
-            System.out.println("Enough players to start game");
-            //implement
+        for(WordSearchGame G: ActiveGames){
+          if(G.gameID == U.GameId){
+            if(G.numPlayers >= 2 && G.numPlayersReady == G.numPlayers && G.checkAllReady()){
+              G.isStarted = true;
+              System.out.println("Enough players to play, still need to add functionality");
+              broadcastGameStart(U.GameId);
+            }
+            else{
+              String error = gson.toJson("CantStart");
+              conn.send(error);
+              System.out.println(G.numPlayers + " ready: " + G.numPlayersReady);
+              System.out.println("Not enough players ready to play");
+            }
+            break;
+          }
         }
      }
      
-    // Update the running time
+  }
+  //this is to search through active games and fine the one we are looking for
+  public void findGame(){
+    // for(WordSearchGame G: ActiveGames){
+    //   if(G.gameID == U.GameId){
+        
+    //   }
+    // }
+  }
 
-    // Get our Game Object
-     //Game G = conn.getAttachment();
-     //G.Update(E);
-
-    // send out the game state every time
-    // to everyone
-     //String jsonString;
-     //jsonString = gson.toJson(G);
-
-
-     //broadcast(jsonString);
+  public void broadcastGameStart(int gameid){
+    WordSearchGame Game = null;
+    for(WordSearchGame G: ActiveGames ){
+      if(G.gameID == gameid){
+        Game = G;
+        break;
+      }
+    }
+    Gson gson = new Gson();
+    String startGame = gson.toJson("ActualGameStart");
+    String msg = "{\"GameId\": " + gameid + ", \"ActualGameStart\": true}";
+    broadcast(msg);
+  }
+  public void broadcastPlayerList(int gameid) {
+    WordSearchGame Game = null;
+    for(WordSearchGame G: ActiveGames){
+      if(G.gameID == gameid){
+        Game = G;
+        break;
+      }
+    }
+    Gson gson = new Gson();
+    String playerListJson = gson.toJson(Game.players);
+    String msg = "{\"GameId\": " + gameid + ", \"playerList\": " + playerListJson + "}";
+    broadcast(msg);
   }
 
   @Override
   public void onMessage(WebSocket conn, ByteBuffer message) {
     System.out.println(conn + ": " + message);
-    // GsonBuilder builder = new GsonBuilder();
-    // Gson gson = builder.create();
-    // UserEvent U = gson.fromJson(message, UserEvent.class);
-    // System.out.println(U.Button);
-
-    // // Get our Game Object
-    // Game G = conn.getAttachment();
-    // G.Update(U);
-
-    // // send out the game state every time
-    // // to everyone
-    // String jsonString;
-    // jsonString = gson.toJson(G);
-
-    // System.out.println(jsonString);
-    // broadcast(jsonString);
   }
 
   @Override
@@ -326,16 +360,5 @@ public class App extends WebSocketServer implements Runnable{
     A.setReuseAddr(true);
     A.start();
     System.out.println("websocket Server started on port: " + port);
-
-    
-
-
-
   }
 }
-
-// professor added this part on his repo to make the websocket port 100 greater than the http port
-// port = 9180;
-// String WSPort = System.getenv("WEBSOCKET_PORT");
-// if (WSPort!=null) {
-//   port = Integer.valueOf(WSPort);

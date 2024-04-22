@@ -4,10 +4,11 @@ import java.util.ArrayList;
 public class Player{
     public int playerID;
     public String nickname;
+    PlayerType playerType;
     public int playerScore;
     public String playerColor;
     boolean isReady;
-
+    
     public Player(String nickname) {
         this.nickname = nickname;
         this.isReady = false;
@@ -15,6 +16,14 @@ public class Player{
  
     public String getName() {
         return nickname; 
+    }
+    public boolean uniqueName(ArrayList<String> names){
+        for(String s: names){
+            if(s.equals(nickname)){
+                return false;
+            }
+        }
+        return true;
     }
     
     public boolean joinGame() {
