@@ -1,19 +1,33 @@
 package uta.cse3310;
+
 import java.util.ArrayList;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 
-public class Chat{
-    public String Messages;
+public class Chat {
+    private ArrayList<String> messages;
 
-    public void sendMessage(){
-
+    public Chat() {
+        messages = new ArrayList<>();
     }
 
-    public ArrayList<String> receiveMessage(){
-        ArrayList<String> message = new ArrayList<>();
-        return message;
+    // Send a message to the chat
+    public void sendMessage(String message) {
+        if (message != null && !message.trim().isEmpty()) {
+            String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+            messages.add(timestamp + " " + message);
+        }
     }
 
-    public void displayMessage(){
+    // Retrieve all messages from the chat
+    public ArrayList<String> receiveMessages() {
+        return new ArrayList<>(messages);
+    }
 
+    // Display all messages in the chat
+    public void displayMessages() {
+        for (String message : messages) {
+            System.out.println(message);
+        }
     }
 }
