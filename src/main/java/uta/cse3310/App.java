@@ -206,6 +206,7 @@ public class App extends WebSocketServer implements Runnable{
         playerNames.add(player1.nickname);
         for(WordSearchGame G : ActiveGames){
         if(G.gameID == U.GameId){
+          player1.playerID = 0;
           G.players.add(player1);
           break;
         }
@@ -218,6 +219,7 @@ public class App extends WebSocketServer implements Runnable{
           playerNames.add(player1.nickname);
           for(WordSearchGame G : ActiveGames){
             if(G.gameID == U.GameId){
+              player1.playerID = G.players.size();
               G.players.add(player1);
             break;
             }
