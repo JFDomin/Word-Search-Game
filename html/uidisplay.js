@@ -72,6 +72,8 @@ document.getElementById("page2").style.display = "block";
 document.getElementById("page2").innerHTML = displayGrid();
 }
 
+//not needed, just keeping for reference
+/*
 //connect chat to websocket
 
 const connection = new WebSocket("ws://localhost:9116");
@@ -91,7 +93,9 @@ connection.onmessage = function (event) {
 
 connection.onerror = function (error) {
   console.error("websocket error: ",error);
-};
+}; */
+
+
 //sending message
 function sendMessage() {
   const input_element = document.getElementById("chat-input");
