@@ -15,7 +15,7 @@ public class WordGrid {
     ArrayList<String> usedWords = new ArrayList<>();
     ArrayList<String> wordBank = new ArrayList<>();
     int[] startPos = new int[]{0,0};
-    Random rand = new Random();
+    transient Random rand = new Random();
     ArrayList<Character> alphabet = new ArrayList<>(Arrays.asList('a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'));
 
     public WordGrid(int size, ArrayList<String> wordBank){
