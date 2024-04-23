@@ -88,26 +88,6 @@
             error.textContent = "";
             console.log("player joined: ", nickname);
             joinButton.disabled = true;
-            // const playerContainer = document.getElementById("playerContainer");
-            // const playerDiv = document.createElement("div");
-            // playerDiv.className = "player";
-            // playerDiv.textContent = nickname;
-            // playerContainer.appendChild(playerDiv);
-
-
-            // const playerIndex = players.length + 1;
-            // const playerColor = playerColors["PLAYER" + playerIndex];
-            // playerDiv.style.backgroundColor = playerColor;
-
-            // Update the text if there are multiple players
-            // if (playerContainer.children.length === 1) {
-            //     const waitingText = document.getElementById("waiting-text");
-            //     waitingText.textContent = "Waiting for another player...";
-            // }
-            // if (playerContainer.children.length > 1) {
-            //     const waitingText = document.getElementById("waiting-text");
-            //     waitingText.textContent = "Waiting for Players to ready up";
-            // }
         }
 
     }
@@ -147,7 +127,7 @@
 </script>
 </body>
 <div id = "WaitingPlayers"></div>
-<script src="uidisplay.js"></script>
+<!-- <script src="uidisplay.js"></script> -->
 
 <script>
     var connection = null;
@@ -175,9 +155,7 @@
         if(obj.type === "chat") {
             displayChatMessage(data.sender,data.message);
             return;
-        } else {
-             console.log("recieved message: ", data);
-        }
+        } 
         
         if('NotUnique' === obj ){
             joinButton.disabled = false;
@@ -246,6 +224,12 @@
             playerDiv.style.color = 'green';
             }
             playerContainer.appendChild(playerDiv);
+            const playerIndex = player.playerID;
+            const playerColor = playerColors[playerIndex];
+            //setPlayerColor(playerIndex);
+            //console.log(setPlayerColor(playerColor));
+            console.log(playerIndex);
+            playerDiv.style.backgroundColor = playerColor;
         });
         
         if (playerList.length === 1) {

@@ -1,12 +1,6 @@
-//const Data = [
-    //[" ", " ", "#", "#", "#", "#", "#", "#", "#", "#",],
-  //  ["#", " ", " ", " ", " ", " ", " ", " ", " ", "#", ],
-  //  ["#", " ", "#", "#", " ", "#", "#", " ", " ", "#", ],
- //   ["#", " ", " ", " ", " ", " ", " ", " ", " ", "#", ],
-   // ["#", "#", "#", "#", "#", "#", "#", "#", "#", "#", ]
-  //];
+
   const playerColors = ['#1eff00', '#ff0000', '#0000ff', '#ffff00'];
-  function setPlayerColors(playerColors) {v
+  function setPlayerColors(playerColors) {
     document.documentElement.style.setProperty('--player1-color', playerColors[0]);
     document.documentElement.style.setProperty('--player2-color', playerColors[1]);
     document.documentElement.style.setProperty('--player3-color', playerColors[2]);
