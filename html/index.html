@@ -171,6 +171,14 @@
         msg = evt.data;
         console.log("Message received: " + msg);
         const obj = JSON.parse(msg);
+        
+        if(obj.type === "chat") {
+            displayChatMessage(data.sender,data.message);
+            return;
+        } else {
+             console.log("recieved message: ", data);
+        }
+        
         if('NotUnique' === obj ){
             joinButton.disabled = false;
             error.textContent = "Name not Unique";
