@@ -113,3 +113,43 @@ button::-moz-focus-inner {
 #send-button {
     padding: 5px 10px;
 }
+#leaderboard-container table {
+    width: 100%;
+    border-collapse: collapse; 
+}
+
+#leaderboard-container th {
+    padding: 10px;
+    text-align: left;
+    font-weight: bold; 
+    color: #ffffff; 
+    background-color: #008000; 
+}
+
+#leaderboard-container td {
+    padding: 10px;
+    border-top: 1px solid #ddd; 
+    background-color: #32CD32; 
+}
+
+#leaderboard-container tr:nth-child(even) {
+    background-color: #3CB371; 
+}
+
+#leaderboard-container {
+    display: none;
+    position: fixed;
+    top: 60%; 
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border: 1px solid black;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 999;
+    width: 80%;
+    height: 80%;
+    max-width: 600px;
+    max-height: 600px;
+    overflow: auto; 
+}
