@@ -17,6 +17,13 @@ public class WordGrid {
     int[] startPos = new int[]{0,0};
     transient Random rand = new Random();
     ArrayList<Character> alphabet = new ArrayList<>(Arrays.asList('a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'));
+    double horizontal = 0;
+    double vertical = 0;
+    double reverse = 0;
+    double diagUp = 0;
+    double diagDown = 0;
+    ArrayList<int [][]> wordCoordinates = new ArrayList<>();
+    final double minPercentage = 0.15;
 
     public WordGrid(int size, ArrayList<String> wordBank){
         grid = new Character[size][size];
@@ -28,8 +35,6 @@ public class WordGrid {
     public void generateGrid(ArrayList<String> word_bank){
         for(String word: word_bank){
             int length = word.length();
-            startPos[0] = rand.nextInt(size);
-            startPos[1] = rand.nextInt(size);
             place(word, startPos, length);
         }
         fillGrid();
@@ -45,22 +50,23 @@ public class WordGrid {
         return grid;
     }
     public void place(String word,int[] start, int length){
-        int allocation = rand.nextInt(5);
+        int[] newStart = new int[]{rand.nextInt(size),rand.nextInt(size)};
+        int allocation = rand.nextInt(6);
         switch(allocation){
             case 1: 
-            placeHorizontal(word,start,length);
+            placeHorizontal(word,newStart,length);
             break;
             case 2:
-            placeVertical(word,start,length);
+            placeVertical(word,newStart,length);
             break;
             case 3:
-            placeDiagonalDown(word,start,length);
+            placeDiagonalDown(word,newStart,length);
             break;
             case 4:
-            placeDiagonalUp(word,start,length);
+            placeDiagonalUp(word,newStart,length);
             break;
             case 5:
-            placeReverse(word,start,length);
+            placeReverse(word,newStart,length);
             break;
         }
     }
@@ -84,7 +90,10 @@ public class WordGrid {
                     col++;
                     validCharCount++;
                 }
+                int end[] = new int[]{row, (col-1)};
+                horizontal++;
                 usedWords.add(word);
+                wordCoordinates.add(new int[][]{start,end});
             }
         }
     }
@@ -107,6 +116,9 @@ public class WordGrid {
                     row++;
                     validCharCount++;
                 }
+                int[] end = new int[]{row-1,col};
+                vertical++;
+                wordCoordinates.add(new int[][]{start,end});
                 usedWords.add(word);
             }
         }
@@ -132,6 +144,9 @@ public class WordGrid {
                     col++;
                     validCharCount++;
                 }
+                int[] end = new int[]{row+1,col-1};
+                diagUp++;
+                wordCoordinates.add(new int[][]{start, end});
                 usedWords.add(word);
             }
         }
@@ -158,6 +173,9 @@ public class WordGrid {
                     col--;
                     validCharCount++;
                 }
+                int[] end = new int[]{row-1, col+1};
+                wordCoordinates.add(new int[][]{start,end});
+                diagDown++;
                 usedWords.add(word);
             }
         }
@@ -180,8 +198,11 @@ public class WordGrid {
                     col--;
                     validCharCount++;
                 }
+                usedWords.add(word);
+                reverse++;
+                int[] end = new int[]{row, col+1};
+                wordCoordinates.add(new int[][]{start,end});
             }
-            usedWords.add(word);
         }
     }
 
@@ -213,9 +234,37 @@ public class WordGrid {
         }
         totalCharCount = 0;
         validCharCount = 0;
+        reverse = 0;
+        diagDown = 0;
+        diagUp = 0;
+        horizontal = 0;
+        vertical = 0;
+        wordCoordinates.clear();
         usedWords.clear();
     }
-    public void getStats(){
-        
+
+    public boolean checkCoordinates(int[][] button){
+        for(int i = 0; i < wordCoordinates.size(); i++){
+            int[][] coords = wordCoordinates.get(i);
+            if(button[0][0] == coords[0][0] && button[0][1] == coords[0][1] && button[1][0] == coords[1][0] && button[1][1] == coords[1][1]){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void printGridStats(){
+        double numWords = usedWords.size();
+        double horPercentage = horizontal/numWords;
+        double vertPercentage = vertical/numWords;
+        double diagUpPerc = diagUp/numWords;
+        double diagDownPerc = diagDown/numWords;
+        double revPerc = reverse/numWords;
+
+        System.err.println("totalchar: " + totalCharCount + " validChar = "+ validCharCount);
+        System.out.println("Horizontal\tVertical\tDiagUp\tDiagDown\tReverse");
+
+        System.out.println( horizontal+"      \t" + vertical+"      \t" + diagUp+"   \t" +diagDown+ "    \t" + reverse);
+        System.out.println("horizontal: " + horPercentage+ " vert: "+ vertPercentage+" diagUp: "+diagUpPerc + " diagDown: "+ diagDownPerc+ "reverse: " + revPerc);
     }
 }
