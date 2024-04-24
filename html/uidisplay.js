@@ -92,25 +92,26 @@ console.error("websocket error: ",error);
 
 //sending message
 function sendMessage() {
-const input_element = document.getElementById("chat-input");
-const message = input_element.ariaValueMax.trim();
+  const input_element = document.getElementById("chat-input");
+  const message = input_element.ariaValueMax.trim();
 
-if (message !== "") {
-  connection.send(JSON,stringify({
+  if (message !== "") {
+    const chatMessage = {
     type: "chat",
-    sender: "Me",
+    sender: nickname,
     message: message
-  }));
+  };
+  connection.send(JSON.stringify(chatMessage));
   input_element.value = "";
 }
 }
 
 //displaying message
 function displayChatMessage(sender, message) {
-const chatMessages = document.getElementById("chat-input");
-const message_element = document.createElement("div");
-message_element.textContent = sender + ": " + message;
-chatMessages.appendChild(message_element);
+  const chatMessages = document.getElementById("message-container");
+  const message_element = document.createElement("div");
+  message_element.textContent = '${sender}: ${message}';
+  chatMessages.appendChild(message_element);
 }
 
 function countdownTimer(duration) {

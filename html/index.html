@@ -173,7 +173,7 @@
         const obj = JSON.parse(msg);
         
         if(obj.type === "chat") {
-            displayChatMessage(data.sender,data.message);
+            displayChatMessage(obj.sender,obj.message);
             return;
         } 
         if("awardWord" in obj){
