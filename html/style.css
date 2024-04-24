@@ -95,7 +95,7 @@ button::-moz-focus-inner {
 /*chat*/
 #chat{
     width: 300px;
-    margin: 20 px auto;
+    margin: 20px auto;
     border: 1px solid #ccc;
     padding: 10px;
 }

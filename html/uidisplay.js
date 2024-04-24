@@ -89,7 +89,7 @@ connection.onerror = function (error) {
 console.error("websocket error: ",error);
 }; */
 
-
+document.getElementById("send-button").addEventListener("click",sendMessage);
 //sending message
 function sendMessage() {
   const input_element = document.getElementById("chat-input");
