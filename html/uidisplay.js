@@ -139,3 +139,61 @@ function countdownTimer(duration) {
     }
   }, 1000);
 }
+async function displayLeaderboard() {
+  const leaderboardContainer = document.getElementById("leaderboard-container");
+  leaderboardContainer.style.display = "block";
+
+  // Get the leaderboard table body
+  const leaderboardBody = document.getElementById("leaderboard-body");
+  leaderboardBody.innerHTML = ""; // Clear previous leaderboard data
+
+  try {
+  
+      const response = await fetch('/leaderboard');
+      if (!response.ok) {
+          throw new Error('Failed to fetch leaderboard data');
+      }
+      const data = await response.json();
+
+   
+      data.sort((a, b) => b.score - a.score);
+
+    
+      data.forEach((player, index) => {
+          const row = leaderboardBody.insertRow(); // Insert a new row
+          const rankCell = row.insertCell(0); // Insert cell for rank
+          const nameCell = row.insertCell(1); // Insert cell for name
+          const scoreCell = row.insertCell(2); // Insert cell for score
+          rankCell.textContent = index + 1; // Set rank
+          nameCell.textContent = player.name; // Set name
+          scoreCell.textContent = player.score; // Set score
+      });
+  } catch (error) {
+      console.error('Error fetching leaderboard data:', error);
+  }
+}
+
+function toggleLeaderboard() {
+  const leaderboardContainer = document.getElementById("leaderboard-container");
+  if (leaderboardContainer.style.display === "block") {
+      leaderboardContainer.style.display = "none"; 
+  } else {
+      displayLeaderboard(); // Display the leaderboard if it's currently hidden
+      leaderboardContainer.style.display = "block"; // Show the leaderboard container
+  }
+}
+
+function showLeaderboard() {
+  toggleLeaderboard();
+}
+
+  leaderboardContainer.style.display = "none"; 
+} else {
+  displayLeaderboard(); // Display the leaderboard if it's currently hidden
+  leaderboardContainer.style.display = "block"; // Show the leaderboard container
+}
+}
+
+function showLeaderboard() {
+toggleLeaderboard();
+}
