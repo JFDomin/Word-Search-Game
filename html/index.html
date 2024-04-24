@@ -10,6 +10,7 @@
 <body>
 <div id = "page1">
     <h1 style="text-align: center">Word Search Game</h1>
+    <div id="timer" style="text-align: center; font-size: 24px; margin-top: 20px;"></div> 
     <div id="table-container"style="display: flex;width: 100%";> </div>
     <div style="display: flex;width: 100%;"id="table-container"></div>
 
@@ -127,7 +128,7 @@
 </script>
 </body>
 <div id = "WaitingPlayers"></div>
-<!-- <script src="uidisplay.js"></script> -->
+<script src="uidisplay.js"></script>
 
 <script>
     var connection = null;
@@ -204,6 +205,8 @@
                 document.getElementById('Lobby').style.display = 'none';
                 document.getElementById('table-container').style.display = 'block';
                 document.getElementById('WaitingPlayers').style.display = 'none';
+                document.getElementById('timer').style.display = 'block';
+                countdownTimer(300); // 300 seconds : set to 5 minutes 
             }
         }
     }

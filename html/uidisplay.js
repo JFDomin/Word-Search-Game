@@ -112,3 +112,39 @@ function displayChatMessage(sender, message) {
   message_element.textContent = sender + ": " + message;
   chatMessages.appendChild(message_element);
 }
+
+function countdownTimer(duration) {
+  var timer = duration; 
+  var minutes;
+  var seconds;
+  var timerInterval;
+
+  function stopTimer() {
+    clearInterval(timerInterval);
+    document.getElementById('timer').textContent = "";
+  }
+
+  timerInterval = setInterval(function() {
+    minutes = parseInt(timer / 60, 10);
+    seconds = parseInt(timer % 60, 10);
+
+    minutes = minutes < 10 ? "0" + minutes : minutes;
+    seconds = seconds < 10 ? "0" + seconds : seconds;
+
+    document.getElementById("timer").textContent = minutes + ":" + seconds;
+
+    if (--timer < 0) {
+      stopTimer();
+      document.getElementById("timer").textContent = "Game Over!";
+    }
+  }, 1000);
+}
+
+connection.onmessage = function (evt) {
+  var obj = JSON.parse(evt.data);
+  console.log("Received message:", obj);
+  if ('ActualGameStart' in obj) {
+    console.log("Starting timer...");
+    countdownTimer(300); // Start the timer with 300 seconds (5 minutes)
+  }
+};
