@@ -139,12 +139,3 @@ function countdownTimer(duration) {
     }
   }, 1000);
 }
-
-connection.onmessage = function (evt) {
-  var obj = JSON.parse(evt.data);
-  console.log("Received message:", obj);
-  if ('ActualGameStart' in obj) {
-    console.log("Starting timer...");
-    countdownTimer(300); // Start the timer with 300 seconds (5 minutes)
-  }
-};
