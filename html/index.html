@@ -66,12 +66,15 @@
 
 <script>
     var gameid;
+    var color;
      class UserEvent {
      GameId; // the game ID on the server
      PlayerIdx; // either PLAYER1 PLAYER2 PLYAER 3 or PLAYER4
      button; //what button they pressed 
      nickname; //the nickname entered if it is join button
      ready;
+     selectedCells; //the int [][] coordinates of the first and last letter selected
+     Color;
 }
     let nickname = "";
     let error = document.getElementById("error");
@@ -139,7 +142,6 @@
             U.GameId = gameid;
             connection.send(JSON.stringify(U));
             console.log(JSON.stringify(U));
-            // implement logic for number of players somewhere in java
         }
     }
 </script>
@@ -174,6 +176,10 @@
             displayChatMessage(data.sender,data.message);
             return;
         } 
+        if("awardWord" in obj){
+            
+            return;
+        }
         
         if('NotUnique' === obj ){
             joinButton.disabled = false;
@@ -196,22 +202,25 @@
         if('YouAre' in obj){
             if(obj.YouAre == "PLAYER1"){
                 idx = 1;
-                //setPlayerColor(playerColor);
+                color = playerColors[idx];
             }
             else if (obj.YouAre == "PLAYER2"){
                 idx = 2;
+                color = playerColors[idx]
             }
             else if(obj.YouAre == "PLAYER3"){
                 idx = 3;
+                color = playerColors[idx];
             }
             else{
                 idx = 4;
+                color = playerColors[0];
             }
             gameid = obj.GameId;
             console.log(msg);
         }
                 //pay attention to only this game 
-                if(gameid === obj.GameId){
+        if(gameid === obj.GameId){
             if ('playerList' in obj && Array.isArray(obj.playerList)) {
             console.log("got player list");
             //get the gameid out of the message specifically to update if gameid == to the msg gameid
@@ -245,11 +254,10 @@
             }
             playerContainer.appendChild(playerDiv);
             const playerIndex = player.playerID;
-            const playerColor = playerColors[playerIndex];
-            //setPlayerColor(playerIndex);
-            //console.log(setPlayerColor(playerColor));
+            //color = playerColors[playerIndex];
             console.log(playerIndex);
-            playerDiv.style.backgroundColor = playerColor;
+            console.log(color);
+            //playerDiv.style.backgroundColor = playerColor;
         });
         
         if (playerList.length === 1) {
@@ -262,6 +270,35 @@
             startButton.disabled = false;
         }
         
+    }
+    let selectedCells = [];
+    function gridSelection(row, col){
+    const nickname = document.getElementById("input-data").value
+    const buttonIndex = [row,col];
+    if(selectedCells.includes(buttonIndex)){
+        console.log("same cell selected");
+    }
+    else{
+        selectedCells.push(buttonIndex);
+        console.log("Button pressed", buttonIndex, " by", nickname);
+    }
+
+    if(selectedCells.length == 2 ){
+        console.log("two buttons pressed, send data here to check if word");
+        console.log(selectedCells);
+        // clear selected cells after
+        U = new UserEvent;
+        U.nickname = nickname;
+        U.GameId = gameid;
+        U.button = "selectedCells";
+        U.Color = color;
+        U.selectedCells = selectedCells;
+        connection.send(JSON.stringify(U));
+        console.log(JSON.stringify(U));
+        selectedCells = [];
+    }
+
+    
     };
   
 

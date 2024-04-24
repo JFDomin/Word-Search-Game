@@ -7,4 +7,6 @@ public class UserEvent {
     String button; //what button they pressed 
     String nickname; //the nickname entered if it is join button
     boolean ready = false;
+    int[][] selectedCells;
+    String Color;
 }

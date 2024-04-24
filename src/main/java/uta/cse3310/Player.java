@@ -5,7 +5,7 @@ public class Player{
     public int playerID;
     public String nickname;
     PlayerType playerType;
-    public int playerScore;
+    public int score = 0;
     public String playerColor;
     boolean isReady;
     
@@ -71,7 +71,7 @@ public class Player{
     }
  
     public int getPlayerScore() {
-        return playerScore;
+        return score;
     }
 
     public void setReady(boolean isReady) {
@@ -82,6 +82,6 @@ public class Player{
         return isReady;
     }
     public void setPlayerScore(int newScore){
-        this.playerScore = newScore;
+        this.score = newScore;
     }
 }

@@ -7,7 +7,7 @@ function setPlayerColors(playerColors) {
   document.documentElement.style.setProperty('--player4-color', playerColors[3]);
 }
 function displayGrid(wordGrid) {
-  var html = '<table style="width: 100%;">';
+  var html = '<table style="width: 75%;">';
   wordGrid.forEach(function(row, rowIndex) {
       html += '<tr>';
       row.forEach(function(cell, colIndex) {
@@ -16,7 +16,7 @@ function displayGrid(wordGrid) {
           html += '</td>';
           html += '<td>';
           //<button class="puzzleCell" onclick="toggleSelected(this)" data-x="0" data-y="0">A</button>
-          html += '<button class="puzzleCell" data-x="' + colIndex + '" data-y="' + rowIndex + '">';
+          html += '<button class="puzzleCell" data-x="' + colIndex + '" data-y="' + rowIndex + '" onclick=gridSelection(' + rowIndex + ',' + colIndex + ') ">';
           html += cell;
           //html += '</button>';
           html += '</td>';

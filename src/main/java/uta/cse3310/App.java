@@ -61,6 +61,7 @@ import java.util.TimerTask;
 import java.util.Vector;
 import java.time.Instant;
 import java.time.Duration;
+import java.util.Arrays;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -273,6 +274,29 @@ public class App extends WebSocketServer implements Runnable{
             break;
           }
         }
+     }
+     else if(U.button.equals("selectedCells")){
+      System.out.println(Arrays.deepToString(U.selectedCells));
+      for(WordSearchGame G: ActiveGames){
+        if(G.gameID == U.GameId){
+          //if the two selected are words, then award points to player
+          //send info to client side to read and highlight in the player color
+          /*ADD CHECK FOR IF THE WORD WAS ALREADY FOUND, DONT AWARD POINTS/HIGHLIGHT IF ALREADY FOUND*/
+          if(G.grid.checkCoordinates(U.selectedCells)){
+            for(Player p: G.players){
+              if(p.nickname.equals(U.nickname)){
+                p.score += 1;
+                p.setPlayerColor();
+                String awardPoints = gson.toJson("awardWord"+ U.GameId+ p.playerColor+ U.selectedCells+ U.nickname);
+                broadcast(awardPoints);
+              }
+            }
+          }
+          break;
+        }
+      }
+
+      System.out.println("Received selected cells message");
      }
      
   }
