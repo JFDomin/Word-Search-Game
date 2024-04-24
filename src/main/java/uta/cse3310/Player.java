@@ -25,7 +25,27 @@ public class Player{
         }
         return true;
     }
-    
+     public void setPlayerColor() {
+    // Switch statement to handle different player types and return corresponding colors
+    switch (playerID) {
+        case 0:
+            playerColor = "#1eff00";
+            break; // Green
+        case 1:
+            playerColor = "#ff0000";
+            break; // Red
+        case 2:
+            playerColor = "#0000ff";
+            break;
+             // Blue
+        case 3:
+            playerColor = "#ffff00";
+            break;
+             // Yellow
+
+    }
+}
+
     public boolean joinGame() {
         return true; 
     }
