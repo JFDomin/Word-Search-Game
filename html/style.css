@@ -24,11 +24,11 @@
 }
 
 .puzzleCell:hover {
-    /* border-width: 3px #ff0000; */
+    border-color: #666666;
 }
 
 .puzzleCell.selected {
-    /* background-color: #ffcc00; */
+    border-color: #666666;
 }
 
 /* background color for the selected state */

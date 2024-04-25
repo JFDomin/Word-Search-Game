@@ -235,8 +235,6 @@
                 const orientation = obj.orientation;
                 console.log(orientation);
                 if(orientation === 'horizontal'){
-                    console.log(orientation);
-                    console.log(coords[0][0]);
                     highlightHorizontal(coords,color);
                 }
             }
@@ -253,7 +251,6 @@
             for(let j = startCol; j <= endCol; j++){
                 const buttonId = 'button-'+ i +','+j;
                 const button = document.getElementById(buttonId);
-                console.log(i,",", j);
                 button.style.backgroundColor = color;
             }
         }
@@ -299,6 +296,7 @@
     const buttonIndex = [row,col];
     if(selectedCells.includes(buttonIndex)){
         console.log("same cell selected");
+        selectedCells = [];
     }
     else{
         selectedCells.push(buttonIndex);
