@@ -313,6 +313,10 @@ public class App extends WebSocketServer implements Runnable{
 
       System.out.println("Received selected cells message");
      }
+     else if(U.button.equals("chatMsg")){
+      String chatMessage = gson.toJson(U);
+      broadcast(chatMessage);
+     }
      
   }
   //this is to search through active games and fine the one we are looking for

@@ -172,19 +172,6 @@
         console.log("Message received: " + msg);
         const obj = JSON.parse(msg);
         
-<<<<<<< HEAD
-        if(obj.type === "chat") {
-            displayChatMessage(obj.sender,obj.message);
-            return;
-        } 
-        
-        if("awardWord" in obj){
-            
-            return;
-        }
-        
-=======
->>>>>>> 1fe3660dc9bdb65ccecc700d1d75fde104de6efe
         if('NotUnique' === obj ){
             joinButton.disabled = false;
             error.textContent = "Name not Unique";
@@ -203,8 +190,8 @@
             tableContainer.innerHTML = displayGrid(obj.data);
             document.getElementById('table-container').style.display = 'none';
         }
-        if(obj.type === "chat") {
-            displayChatMessage(obj.sender,obj.message);
+        if('chatMsg' in obj) {
+            displayChatMessage(obj);
             return;
         } 
         if('YouAre' in obj){

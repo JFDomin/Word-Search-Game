@@ -93,34 +93,33 @@ document.getElementById("send-button").addEventListener("click",sendMessage);
 //sending message
 function sendMessage() {
   const input_element = document.getElementById("chat-input");
+  const msg = document.getElementById("chat-input").value;
+  const nickname = document.getElementById("input-data").value;
+  console.log(nickname, ": ", msg);
 
 
-  if (input_element !== "") {
-    const U = new UserEvent;
-    U.GameID = gameid;
-    buttonType = "send";
-    U.buttonType = buttonType;
+  if (msg !== "") {
+    U = new UserEvent;
     U.nickname = nickname;
-    const chatMessage = {
-    type: "chat",
-    sender: nickname,
-    message: input_element
-  };
-  connection.send(JSON.stringify(chatMessage));
-  console.log("sending message:",input_element)
-  displayChatMessage(nickname, input_element);
-  input_element.value = "";
+    U.button = "chatMsg";
+    U.msg = msg;
+    connection.send(JSON.stringify(U));
+    console.log("sending message:",msg)
+    displayChatMessage(nickname, msg);
+    input_element.value = ""; //resets input box to placeholder after sending message
 }
 }
 
 //displaying message
-function displayChatMessage(sender, message) {
+function displayChatMessage(obj){
   const chatMessages = document.getElementById("message-container");
   const message_element = document.createElement("div");
-  message_element.textContent = '${sender}: ${message}';
+  message_element.textContent = obj.msg;
+  console.log("displaying message");
+  console.log(obj.msg);
   chatMessages.appendChild(message_element);
-  console.log("displaying message:",message)
 }
+
 
 function countdownTimer(duration) {
 var timer = duration; 

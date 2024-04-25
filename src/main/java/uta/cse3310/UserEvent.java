@@ -9,4 +9,5 @@ public class UserEvent {
     boolean ready = false;
     int[][] selectedCells;
     String Color;
+    String msg; //chat message
 }
