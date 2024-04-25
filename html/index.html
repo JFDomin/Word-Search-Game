@@ -261,7 +261,18 @@
             }
         }
     }
-    
+    function highlightVertical(coords, color){
+        const startRow= coords[0][0];
+        const endRow = coords[1][0];
+        const startCol = coords[0][1];
+        const endCol = coords[1][1];
+        //column stays the same for vertical
+        for(let j = startRow; j <= endRow; j++){
+            const buttonId = 'button-'+ j +','+startCol;
+            const button = document.getElementById(buttonId);
+            button.style.backgroundColor = color;
+        }
+    }
     function updatePlayerList(playerList){
         const playerContainer = document.getElementById("playerContainer");
         const waitingText = document.getElementById("waiting-text");
