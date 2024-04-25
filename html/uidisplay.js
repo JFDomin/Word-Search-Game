@@ -93,33 +93,26 @@ document.getElementById("send-button").addEventListener("click",sendMessage);
 //sending message
 function sendMessage() {
   const input_element = document.getElementById("chat-input");
-  const msg = document.getElementById("chat-input").value;
-  const nickname = document.getElementById("input-data").value;
-  console.log(nickname, ": ", msg);
+  const message = input_element.ariaValueMax.trim();
 
-
-  if (msg !== "") {
-    U = new UserEvent;
-    U.nickname = nickname;
-    U.button = "chatMsg";
-    U.msg = msg;
-    connection.send(JSON.stringify(U));
-    console.log("sending message:",msg)
-    displayChatMessage(nickname, msg);
-    input_element.value = ""; //resets input box to placeholder after sending message
+  if (message !== "") {
+    const chatMessage = {
+    type: "chat",
+    sender: nickname,
+    message: message
+  };
+  connection.send(JSON.stringify(chatMessage));
+  input_element.value = "";
 }
 }
 
 //displaying message
-function displayChatMessage(obj){
+function displayChatMessage(sender, message) {
   const chatMessages = document.getElementById("message-container");
   const message_element = document.createElement("div");
-  message_element.textContent = obj.msg;
-  console.log("displaying message");
-  console.log(obj.msg);
+  message_element.textContent = '${sender}: ${message}';
   chatMessages.appendChild(message_element);
 }
-
 
 function countdownTimer(duration) {
 var timer = duration; 
@@ -192,3 +185,286 @@ if (leaderboardContainer.style.display === "block") {
 function showLeaderboard() {
 toggleLeaderboard();
 }
+var gameid;
+var color;
+ class UserEvent {
+ GameId; // the game ID on the server
+ PlayerIdx; // either PLAYER1 PLAYER2 PLYAER 3 or PLAYER4
+ button; //what button they pressed 
+ nickname; //the nickname entered if it is join button
+ ready;
+ selectedCells; //the int [][] coordinates of the first and last letter selected
+ Color;
+}
+let nickname = "";
+let error = document.getElementById("error");
+
+function handleMissingNickname(){
+    console.log("player missing nickname")
+    error.textContent = "Please enter a nickname."
+    error.style.color = "red"
+    return
+}
+function handleChange(event) {
+}
+function handleNickEnter(){
+    const nickname = document.getElementById("input-data").value
+    const joinButton = document.getElementById("join-button");
+    // const readyButton = document.getElementById("ready-btn");
+    // const startButton = document.getElementById("start-btn");
+    console.log('nickname', nickname);
+    console.log(gameid);
+    if (!nickname) {
+        handleMissingNickname();
+    }
+    else {
+        U = new UserEvent;
+        buttonType = "join";
+        U.nickname = nickname;
+        U.button = buttonType;
+        U.GameId = gameid;
+        connection.send(JSON.stringify(U));
+        console.log(JSON.stringify(U));
+
+        error.textContent = "";
+        console.log("player joined: ", nickname);
+        joinButton.disabled = true;
+        const nicknameBar = document.getElementById('input-data');
+        nicknameBar.style.display === "none";
+        joinButton.style.display = "none"; 
+
+    }
+
+}
+function readyPlayer(){
+    const nickname = document.getElementById("input-data").value
+    // logic is not complete yet
+    if (!nickname) {
+        handleMissingNickname();
+    }
+    else {
+        buttonType = "readyUp";
+        U.button = buttonType;
+        U.GameId = gameid;
+        U.nickname = nickname;
+        connection.send(JSON.stringify(U));
+        console.log(JSON.stringify(U));
+        error.textContent = ""
+        console.log("player ready: ", nickname);
+    }
+
+}
+function startGame(){
+    const nickname = document.getElementById("input-data").value;
+    if (!nickname) {
+        handleMissingNickname();
+    }
+    else {
+        console.log("game started by: ", nickname);
+        buttonType = "startGame";
+        U.button = buttonType;
+        U.GameId = gameid;
+        connection.send(JSON.stringify(U));
+        console.log(JSON.stringify(U));
+    }
+}
+var connection = null;
+var serverUrl = "ws://" + window.location.hostname +":"+ (parseInt(location.port) + 100);
+document.getElementById("topMessage").innerHTML = "?";
+// Create the connection with the server
+connection = new WebSocket(serverUrl);
+
+connection.onopen = function (evt) {
+    console.log("open - Connection established");
+    document.getElementById("topMessage").innerHTML = " "
+
+}
+connection.onclose = function (evt) {
+    console.log("close");
+    document.getElementById("topMessage").innerHTML = "Server Offline"
+}
+connection.onmessage = function (evt) {
+    const joinButton = document.getElementById("join-button");
+    var msg;
+    msg = evt.data;
+    console.log("Message received: " + msg);
+    const obj = JSON.parse(msg);
+    
+    if('NotUnique' === obj ){
+        joinButton.disabled = false;
+        error.textContent = "Name not Unique";
+        error.style.color = "red";
+        return;
+    }
+    else if('CantStart' === obj){
+        error.textContent = "Not Enough Players Ready";
+        error.style.color = "red";
+        return;
+    }
+    if (obj.type == "wordGrid"){
+        //console.log(obj.data);
+        //displayGrid(obj.data);
+        const tableContainer = document.getElementById('table-container');
+        tableContainer.innerHTML = displayGrid(obj.data);
+        document.getElementById('table-container').style.display = 'none';
+    }
+    if(obj.type === "chat") {
+        displayChatMessage(obj.sender,obj.message);
+        return;
+    } 
+    if('YouAre' in obj){
+        if(obj.YouAre == "PLAYER1"){
+            idx = 1;
+            color = playerColors[idx];
+        }
+        else if (obj.YouAre == "PLAYER2"){
+            idx = 2;
+            color = playerColors[idx]
+        }
+        else if(obj.YouAre == "PLAYER3"){
+            idx = 3;
+            color = playerColors[idx];
+        }
+        else{
+            idx = 4;
+            color = playerColors[0];
+        }
+        gameid = obj.GameId;
+        console.log(msg);
+    }
+            //pay attention to only this game 
+    if(gameid === obj.GameId){
+        if ('playerList' in obj && Array.isArray(obj.playerList)) {
+        console.log("got player list");
+        //get the gameid out of the message specifically to update if gameid == to the msg gameid
+        //this seperates the display of each game
+        updatePlayerList(obj.playerList);
+        }
+        else if ('ActualGameStart' in obj){
+            document.getElementById('Lobby').style.display = 'none';
+            document.getElementById('table-container').style.display = 'block';
+            document.getElementById('WaitingPlayers').style.display = 'none';
+            document.getElementById('timer').style.display = 'block';
+            countdownTimer(300); // 300 seconds : set to 5 minutes 
+        }
+        else if('awardWord' in obj){
+            const coords = JSON.parse(obj.selectedCells);
+            const color = obj.playerColor;
+            const orientation = obj.orientation;
+            console.log(orientation);
+            if(orientation === 'horizontal'){
+                highlightHorizontal(coords,color);
+            } 
+            else if(orientation === 'vertical'){
+                highlightVertical(coords,color);
+            }
+            else if(orientation === 'DiagDown'){
+                highlightDiagDown(coords,color);
+            }                                                                                                                                                                                                                                                                                            
+        }
+    }
+}
+
+function highlightHorizontal(coords, color){
+    const startRow= coords[0][0];
+    const endRow = coords[1][0];
+    const startCol = coords[0][1];
+    const endCol = coords[1][1];
+    const grid = document.getElementById('table-container');
+    for(let i = startRow; i <= endRow; i++){
+        for(let j = startCol; j <= endCol; j++){
+            const buttonId = 'button-'+ i +','+j;
+            const button = document.getElementById(buttonId);
+            button.style.backgroundColor = color;
+        }
+    }
+}
+function highlightVertical(coords, color){
+    const startRow= coords[0][0];
+    const endRow = coords[1][0];
+    const startCol = coords[0][1];
+    const endCol = coords[1][1];
+    //column stays the same for vertical
+    for(let j = startRow; j <= endRow; j++){
+        const buttonId = 'button-'+ j +','+startCol;
+        const button = document.getElementById(buttonId);
+        button.style.backgroundColor = color;
+    }
+}
+function highlightDiagDown(coords, color){
+    const startRow= coords[0][0];
+    const endRow = coords[1][0];
+    let startCol = coords[0][1];
+    const endCol = coords[1][1];
+    const grid = document.getElementById('table-container');
+    for(let i = startRow; i <= endRow; i++){
+        const buttonId = 'button-'+i+','+startCol;
+        const button = document.getElementById(buttonId);
+        button.style.backgroundColor = color;
+        startCol--;
+    }
+}
+function updatePlayerList(playerList){
+    const playerContainer = document.getElementById("playerContainer");
+    const waitingText = document.getElementById("waiting-text");
+    const readyButton = document.getElementById("ready-btn");
+    const startButton = document.getElementById("start-btn");
+    
+    playerContainer.innerHTML = ""; // Clear existing player list
+    
+    playerList.forEach(function(player) {
+        const playerDiv = document.createElement("div");
+        playerDiv.className = "player";
+        playerDiv.textContent = player.nickname;
+        if (player.isReady) {
+        playerDiv.style.color = 'green';
+        }
+        playerContainer.appendChild(playerDiv);
+        const playerIndex = player.playerID;
+        //color = playerColors[playerIndex];
+        console.log(playerIndex);
+        console.log(color);
+        //playerDiv.style.backgroundColor = playerColor;
+    });
+    
+    if (playerList.length === 1) {
+        waitingText.textContent = "Waiting for another player...";
+        readyButton.disabled = false; // Disable ready button when there's only one player
+        startButton.disabled = true; // Disable start button when there's only one player
+    } else {
+        waitingText.textContent = "Waiting for Players to ready up";
+        readyButton.disabled = false;
+        startButton.disabled = false;
+    }
+    
+}
+let selectedCells = [];
+function gridSelection(row, col){
+const nickname = document.getElementById("input-data").value
+const buttonIndex = [row,col];
+if(selectedCells.includes(buttonIndex)){
+    console.log("same cell selected");
+    selectedCells = [];
+}
+else{
+    selectedCells.push(buttonIndex);
+    console.log("Button pressed", buttonIndex, " by", nickname);
+}
+
+if(selectedCells.length == 2 ){
+    console.log("two buttons pressed, send data here to check if word");
+    console.log(selectedCells);
+    // clear selected cells after
+    U = new UserEvent;
+    U.nickname = nickname;
+    U.GameId = gameid;
+    U.button = "selectedCells";
+    U.Color = color;
+    U.selectedCells = selectedCells;
+    connection.send(JSON.stringify(U));
+    console.log(JSON.stringify(U));
+    selectedCells = [];
+}
+
+
+};

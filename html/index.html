@@ -9,21 +9,21 @@
 <label id="topMessage"></label>
 <body>
 <div id = "page1">
-    <h1 version="1.0.0"style="text-align: center">Word Search Game</h1>
+    <div version="1.0.0" id = "title">Word Search Game</div>
     <div id="timer" style="text-align: center; font-size: 24px; margin-top: 20px;"></div> 
     <!-- <div id="table-container"style="display: flex;width: 100%";> </div> -->
     <div style="display: flex;width: 100%;"id="table-container"></div>
-
-<div style="display:flex;">
-    <div style="display:flex;flex-direction:column;width:20%"id = "Lobby">
-        <div>Lobby</div>
-        <label for="input-data">Enter nickname:</label>
-        <input type="text" id="input-data" placeholder="Enter nickname" onchange="handleChange(event)">
+<div class="container">
+    <div class="lobby">
+        <div style="display:flex;">
+            <div id = "Lobby"> 
+            <input type="text" id="input-data" placeholder="Enter nickname" onchange="handleChange(event)">
         <button id = "join-button" onclick="handleNickEnter()">Join</button>
         <span id="error"></span>
+         </div>
     </div>
-
-
+</div>
+   <div class = "waiting-players">
     <div style="display:flex;flex-direction:column;width:80%;border: 1px solid black;padding: 20px;margin-left: 5px;justify-content: center;"id = "WaitingPlayers">
         <div id="waiting-text">Waiting for Players...</div>
         <div style="display:flex;width: 80%;justify-content: space-around;" id="playerContainer">
@@ -34,6 +34,7 @@
             
         </div>
     </div>
+  </div>
  </div>
 </div>
 <button onclick="showLeaderboard()">Show Leaderboard</button>
@@ -63,327 +64,8 @@
         <button id="send-button" onclick="sendMessage()">Send</button>
  </div>
  <script src="uidisplay.js"></script>
-
-<script>
-    var gameid;
-    var color;
-     class UserEvent {
-     GameId; // the game ID on the server
-     PlayerIdx; // either PLAYER1 PLAYER2 PLYAER 3 or PLAYER4
-     button; //what button they pressed 
-     nickname; //the nickname entered if it is join button
-     ready;
-     selectedCells; //the int [][] coordinates of the first and last letter selected
-     Color;
-}
-    let nickname = "";
-    let error = document.getElementById("error");
-
-    function handleMissingNickname(){
-        console.log("player missing nickname")
-        error.textContent = "Please enter a nickname."
-        error.style.color = "red"
-        return
-    }
-    function handleChange(event) {
-    }
-    function handleNickEnter(){
-        const nickname = document.getElementById("input-data").value
-        const joinButton = document.getElementById("join-button");
-        // const readyButton = document.getElementById("ready-btn");
-        // const startButton = document.getElementById("start-btn");
-        console.log('nickname', nickname);
-        console.log(gameid);
-        if (!nickname) {
-            handleMissingNickname();
-        }
-        else {
-            U = new UserEvent;
-            buttonType = "join";
-            U.nickname = nickname;
-            U.button = buttonType;
-            U.GameId = gameid;
-            connection.send(JSON.stringify(U));
-            console.log(JSON.stringify(U));
-
-            error.textContent = "";
-            console.log("player joined: ", nickname);
-            joinButton.disabled = true;
-        }
-
-    }
-    function readyPlayer(){
-        const nickname = document.getElementById("input-data").value
-        // logic is not complete yet
-        if (!nickname) {
-            handleMissingNickname();
-        }
-        else {
-            buttonType = "readyUp";
-            U.button = buttonType;
-            U.GameId = gameid;
-            U.nickname = nickname;
-            connection.send(JSON.stringify(U));
-            console.log(JSON.stringify(U));
-            error.textContent = ""
-            console.log("player ready: ", nickname);
-        }
-
-    }
-    function startGame(){
-        const nickname = document.getElementById("input-data").value;
-        if (!nickname) {
-            handleMissingNickname();
-        }
-        else {
-            console.log("game started by: ", nickname);
-            buttonType = "startGame";
-            U.button = buttonType;
-            U.GameId = gameid;
-            connection.send(JSON.stringify(U));
-            console.log(JSON.stringify(U));
-        }
-    }
-</script>
 </body>
 <div id = "WaitingPlayers"></div>
-
-
-<script>
-    var connection = null;
-    var serverUrl = "ws://" + window.location.hostname +":"+ (parseInt(location.port) + 100);
-    document.getElementById("topMessage").innerHTML = "?";
-    // Create the connection with the server
-    connection = new WebSocket(serverUrl);
-
-    connection.onopen = function (evt) {
-        console.log("open - Connection established");
-        document.getElementById("topMessage").innerHTML = " "
-
-    }
-    connection.onclose = function (evt) {
-        console.log("close");
-        document.getElementById("topMessage").innerHTML = "Server Offline"
-    }
-    connection.onmessage = function (evt) {
-        const joinButton = document.getElementById("join-button");
-        var msg;
-        msg = evt.data;
-        console.log("Message received: " + msg);
-        const obj = JSON.parse(msg);
-        
-        if('NotUnique' === obj ){
-            joinButton.disabled = false;
-            error.textContent = "Name not Unique";
-            error.style.color = "red";
-            return;
-        }
-        else if('CantStart' === obj){
-            error.textContent = "Not Enough Players Ready";
-            error.style.color = "red";
-            return;
-        }
-        if (obj.type == "wordGrid"){
-            //console.log(obj.data);
-            //displayGrid(obj.data);
-            const tableContainer = document.getElementById('table-container');
-            tableContainer.innerHTML = displayGrid(obj.data);
-            document.getElementById('table-container').style.display = 'none';
-        }
-        if('chatMsg' in obj) {
-            displayChatMessage(obj);
-            return;
-        } 
-        if('YouAre' in obj){
-            if(obj.YouAre == "PLAYER1"){
-                idx = 1;
-                color = playerColors[idx];
-            }
-            else if (obj.YouAre == "PLAYER2"){
-                idx = 2;
-                color = playerColors[idx]
-            }
-            else if(obj.YouAre == "PLAYER3"){
-                idx = 3;
-                color = playerColors[idx];
-            }
-            else{
-                idx = 4;
-                color = playerColors[0];
-            }
-            gameid = obj.GameId;
-            console.log(msg);
-        }
-                //pay attention to only this game 
-        if(gameid === obj.GameId){
-            if ('playerList' in obj && Array.isArray(obj.playerList)) {
-            console.log("got player list");
-            //get the gameid out of the message specifically to update if gameid == to the msg gameid
-            //this seperates the display of each game
-            updatePlayerList(obj.playerList);
-            }
-            else if ('ActualGameStart' in obj){
-                document.getElementById('Lobby').style.display = 'none';
-                document.getElementById('table-container').style.display = 'block';
-                document.getElementById('WaitingPlayers').style.display = 'none';
-                document.getElementById('timer').style.display = 'block';
-                countdownTimer(300); // 300 seconds : set to 5 minutes 
-            }
-            else if('awardWord' in obj){
-                const coords = JSON.parse(obj.selectedCells);
-                const color = obj.playerColor;
-                const orientation = obj.orientation;
-                console.log(orientation);
-                if(orientation === 'horizontal'){
-                    highlightHorizontal(coords,color);
-                } 
-                else if(orientation === 'vertical'){
-                    highlightVertical(coords,color);
-                }
-                else if(orientation === 'DiagDown'){
-                    highlightDiagDown(coords,color);
-                }
-                else if(orientation === 'DiagUp'){
-                    highlightDiagUp(coords, color);
-                }
-                else if(orientation === 'reverse'){
-                    highlightReverse(coords,color);
-                }                                                                                                                                                                                                                                                                                            
-            }
-        }
-    }
-
-    function highlightHorizontal(coords, color){
-        const startRow= coords[0][0];
-        const endRow = coords[1][0];
-        const startCol = coords[0][1];
-        const endCol = coords[1][1];
-        const grid = document.getElementById('table-container');
-        for(let i = startRow; i <= endRow; i++){
-            for(let j = startCol; j <= endCol; j++){
-                const buttonId = 'button-'+ i +','+j;
-                const button = document.getElementById(buttonId);
-                button.style.backgroundColor = color;
-            }
-        }
-    }
-    function highlightVertical(coords, color){
-        const startRow= coords[0][0];
-        const endRow = coords[1][0];
-        const startCol = coords[0][1];
-        const endCol = coords[1][1];
-        //column stays the same for vertical
-        for(let j = startRow; j <= endRow; j++){
-            const buttonId = 'button-'+ j +','+startCol;
-            const button = document.getElementById(buttonId);
-            button.style.backgroundColor = color;
-        }
-    }
-    function highlightDiagDown(coords, color){
-        const startRow= coords[0][0];
-        const endRow = coords[1][0];
-        let startCol = coords[0][1];
-        const endCol = coords[1][1];
-        const grid = document.getElementById('table-container');
-        for(let i = startRow; i <= endRow; i++){
-            const buttonId = 'button-'+i+','+startCol;
-            const button = document.getElementById(buttonId);
-            button.style.backgroundColor = color;
-            startCol--;
-        }
-    }
-    function highlightDiagUp(coords, color){
-        const startRow= coords[0][0];
-        const endRow = coords[1][0];
-        let startCol = coords[0][1];
-        const endCol = coords[1][1];
-        const grid = document.getElementById('table-container');
-        for(let i = startRow; i >= endRow; i--){
-            const buttonId = 'button-'+i+','+startCol;
-            const button = document.getElementById(buttonId);
-            button.style.backgroundColor = color;
-            startCol++;
-        }
-    }
-    function highlightReverse(coords, color){
-        const startRow= coords[0][0];
-        const endRow = coords[1][0];
-        const startCol = coords[0][1];
-        const endCol = coords[1][1];
-        for(let j = startCol; j >= endCol; j--){
-            const buttonId = 'button-'+ startRow +','+j;
-            const button = document.getElementById(buttonId);
-            button.style.backgroundColor = color;
-        }
-    }
-
-    function updatePlayerList(playerList){
-        const playerContainer = document.getElementById("playerContainer");
-        const waitingText = document.getElementById("waiting-text");
-        const readyButton = document.getElementById("ready-btn");
-        const startButton = document.getElementById("start-btn");
-        
-        playerContainer.innerHTML = ""; // Clear existing player list
-        
-        playerList.forEach(function(player) {
-            const playerDiv = document.createElement("div");
-            playerDiv.className = "player";
-            playerDiv.textContent = player.nickname;
-            if (player.isReady) {
-            playerDiv.style.color = 'green';
-            }
-            playerContainer.appendChild(playerDiv);
-            const playerIndex = player.playerID;
-            //color = playerColors[playerIndex];
-            console.log(playerIndex);
-            console.log(color);
-            //playerDiv.style.backgroundColor = playerColor;
-        });
-        
-        if (playerList.length === 1) {
-            waitingText.textContent = "Waiting for another player...";
-            readyButton.disabled = false; // Disable ready button when there's only one player
-            startButton.disabled = true; // Disable start button when there's only one player
-        } else {
-            waitingText.textContent = "Waiting for Players to ready up";
-            readyButton.disabled = false;
-            startButton.disabled = false;
-        }
-        
-    }
-    let selectedCells = [];
-    function gridSelection(row, col){
-    const nickname = document.getElementById("input-data").value
-    const buttonIndex = [row,col];
-    if(selectedCells.includes(buttonIndex)){
-        console.log("same cell selected");
-        selectedCells = [];
-    }
-    else{
-        selectedCells.push(buttonIndex);
-        console.log("Button pressed", buttonIndex, " by", nickname);
-    }
-
-    if(selectedCells.length == 2 ){
-        console.log("two buttons pressed, send data here to check if word");
-        console.log(selectedCells);
-        // clear selected cells after
-        U = new UserEvent;
-        U.nickname = nickname;
-        U.GameId = gameid;
-        U.button = "selectedCells";
-        U.Color = color;
-        U.selectedCells = selectedCells;
-        connection.send(JSON.stringify(U));
-        console.log(JSON.stringify(U));
-        selectedCells = [];
-    }
-
-    
-    };
-  
-
-    </script>
     <link rel="stylesheet" href="style.css">
     </body>
     </html>
