@@ -15,8 +15,8 @@ function displayGrid(wordGrid) {
           //html += cell;
           html += '</td>';
           html += '<td>';
-          //<button class="puzzleCell" onclick="toggleSelected(this)" data-x="0" data-y="0">A</button>
-          html += '<button class="puzzleCell" data-x="' + colIndex + '" data-y="' + rowIndex + '" onclick=gridSelection(' + rowIndex + ',' + colIndex + ') ">';
+          const buttonId = 'button-'+ rowIndex+','+colIndex;
+          html += '<button id="'+buttonId+'"class="puzzleCell" data-x="' + colIndex + '" data-y="' + rowIndex + '" onclick=gridSelection(' + rowIndex + ',' + colIndex + ') ">';
           html += cell;
           //html += '</button>';
           html += '</td>';
