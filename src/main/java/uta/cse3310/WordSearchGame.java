@@ -17,7 +17,7 @@ public class WordSearchGame{
     ArrayList<String> words = WordBank.readFileIntoArray("src/main/java/uta/cse3310/filtered_word 1.txt");
     ArrayList<String> found = new ArrayList<>();
     ArrayList<String> wordBank = WordBank.wordBank(found, words);
-    WordGrid grid = new WordGrid(20 ,wordBank);
+    WordGrid grid = new WordGrid(30 ,wordBank);
     int numPlayersReady = 0;
     boolean isStarted = false;
     ArrayList<int[][]> foundCoords = new ArrayList<>();

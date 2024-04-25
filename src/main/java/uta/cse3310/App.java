@@ -121,7 +121,7 @@ public class App extends WebSocketServer implements Runnable{
       
       //no matches? create new game
       if(G == null){
-        if(ActiveGames.size() <= 5){
+        if(ActiveGames.size() <= 25){
           G = new WordSearchGame();
           G.gameID = GameId;
           GameId++;
@@ -135,6 +135,7 @@ public class App extends WebSocketServer implements Runnable{
           Character[][] wordGrid = G.getwordgrid();
           String gridJson = gson.toJson(wordGrid);
           conn.send("{\"type\": \"wordGrid\",\"data\": "+ gridJson + "}");
+          G.grid.printGridStats();
         }
       }
       else{
