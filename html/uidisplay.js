@@ -93,15 +93,22 @@ document.getElementById("send-button").addEventListener("click",sendMessage);
 //sending message
 function sendMessage() {
   const input_element = document.getElementById("chat-input");
-  const message = input_element.ariaValueMax.trim();
 
-  if (message !== "") {
+
+  if (input_element !== "") {
+    const U = new UserEvent;
+    U.GameID = gameid;
+    buttonType = "send";
+    U.buttonType = buttonType;
+    U.nickname = nickname;
     const chatMessage = {
     type: "chat",
     sender: nickname,
-    message: message
+    message: input_element
   };
   connection.send(JSON.stringify(chatMessage));
+  console.log("sending message:",input_element)
+  displayChatMessage(nickname, input_element);
   input_element.value = "";
 }
 }
@@ -112,6 +119,7 @@ function displayChatMessage(sender, message) {
   const message_element = document.createElement("div");
   message_element.textContent = '${sender}: ${message}';
   chatMessages.appendChild(message_element);
+  console.log("displaying message:",message)
 }
 
 function countdownTimer(duration) {
