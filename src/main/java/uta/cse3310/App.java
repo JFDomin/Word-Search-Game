@@ -62,7 +62,7 @@ import java.util.Vector;
 import java.time.Instant;
 import java.time.Duration;
 import java.util.Arrays;
-
+import com.google.gson.JsonObject;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -185,6 +185,7 @@ public class App extends WebSocketServer implements Runnable{
     System.out.println(conn + " has closed");
     // Retrieve the game tied to the websocket connection
      WordSearchGame G = conn.getAttachment();
+     System.out.println(G.gameID);
      G = null;
   }
 
@@ -283,15 +284,29 @@ public class App extends WebSocketServer implements Runnable{
           //send info to client side to read and highlight in the player color
           /*ADD CHECK FOR IF THE WORD WAS ALREADY FOUND, DONT AWARD POINTS/HIGHLIGHT IF ALREADY FOUND*/
           if(G.grid.checkCoordinates(U.selectedCells)){
+            if(G.checkWordsFound(U.selectedCells)){
+            G.foundCoords.add(U.selectedCells);
             for(Player p: G.players){
               if(p.nickname.equals(U.nickname)){
                 p.score += 1;
                 p.setPlayerColor();
-                String awardPoints = gson.toJson("awardWord"+ U.GameId+ p.playerColor+ U.selectedCells+ U.nickname);
+                JsonObject jsonObject = new JsonObject();
+                jsonObject.addProperty("awardWord", "awardWord");
+                jsonObject.addProperty("GameId", U.GameId);
+                jsonObject.addProperty("playerColor", p.playerColor);
+                jsonObject.addProperty("selectedCells", Arrays.deepToString(U.selectedCells));
+                String orientation = G.orientation(U.selectedCells);
+                jsonObject.addProperty("orientation", orientation);
+                jsonObject.addProperty("nickname", U.nickname);
+                //  + U.GameId + p.playerColor + Arrays.deepToString(U.selectedCells)+ U.nickname
+                //String awardPoints = gson.toJson("awardWord"+ U.GameId+ p.playerColor+ U.selectedCells+ U.nickname);
+                String awardPoints = gson.toJson(jsonObject);
+                System.out.println(p.nickname +": "+p.score);
                 broadcast(awardPoints);
               }
             }
           }
+        }
           break;
         }
       }
@@ -374,14 +389,21 @@ public class App extends WebSocketServer implements Runnable{
   public static void main(String[] args) {
 
     // Set up the http server
+    String HttpPort = System.getenv("HTTP_PORT");
     int port = 9016;
+    if(HttpPort != null){
+      port = Integer.valueOf(HttpPort);
+    }
     HttpServer H = new HttpServer(port, "./html");
     H.start();
     System.out.println("http Server started on port: " + port);
 
     // create and start the websocket server
-
     port = 9116;
+    String WebSockPort = System.getenv("WEBSOCKET_PORT");
+    if(WebSockPort != null){
+      port = Integer.valueOf(WebSockPort);
+    }
     App A = new App(port);
     A.setReuseAddr(true);
     A.start();

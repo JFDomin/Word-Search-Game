@@ -24,11 +24,11 @@
 }
 
 .puzzleCell:hover {
-    background-color: #ff0000;
+    border-color: #666666;
 }
 
 .puzzleCell.selected {
-    background-color: #ffcc00;
+    border-color: #666666;
 }
 
 /* background color for the selected state */
@@ -36,13 +36,13 @@
 
 
 .puzzleCell:active {
-    background-color: #ff0000;
+    /* background-color: #ff0000; */
     box-shadow: 0 5px #666666;
     transform: translateY(4px);
 }
 
 .puzzleCell.clicked {
-    background-color: #00ff6a;
+    /* background-color: #00ff6a; */
     box-shadow: 0 5px #666666;
     transform: translateY(4px);
 }
@@ -63,7 +63,7 @@ button::-moz-focus-inner {
 }
 
 #table-container .selected {
-    color: red;
+    /* color: red; */
     outline: none;
 
     &:focus {
