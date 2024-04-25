@@ -236,7 +236,13 @@
                 console.log(orientation);
                 if(orientation === 'horizontal'){
                     highlightHorizontal(coords,color);
+                } 
+                else if(orientation === 'vertical'){
+                    highlightVertical(coords,color);
                 }
+                else if(orientation === 'DiagDown'){
+                    highlightDiagDown(coords,color);
+                }                                                                                                                                                                                                                                                                                            
             }
         }
     }
