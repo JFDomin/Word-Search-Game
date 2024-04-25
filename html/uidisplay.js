@@ -356,7 +356,13 @@ connection.onmessage = function (evt) {
             }
             else if(orientation === 'DiagDown'){
                 highlightDiagDown(coords,color);
-            }                                                                                                                                                                                                                                                                                            
+            }
+            else if(orientation === 'DiagUp'){
+                highlightDiagUp(coords, color);
+            }
+            else if(orientation === 'reverse'){
+                highlightReverse(coords,color);
+            }                                                                                                                                                                                                                                                                                                
         }
     }
 }
@@ -398,6 +404,30 @@ function highlightDiagDown(coords, color){
         const button = document.getElementById(buttonId);
         button.style.backgroundColor = color;
         startCol--;
+    }
+}
+function highlightDiagUp(coords, color){
+    const startRow= coords[0][0];
+    const endRow = coords[1][0];
+    let startCol = coords[0][1];
+    const endCol = coords[1][1];
+    const grid = document.getElementById('table-container');
+    for(let i = startRow; i >= endRow; i--){
+        const buttonId = 'button-'+i+','+startCol;
+        const button = document.getElementById(buttonId);
+        button.style.backgroundColor = color;
+        startCol++;
+    }
+}
+function highlightReverse(coords, color){
+    const startRow= coords[0][0];
+    const endRow = coords[1][0];
+    const startCol = coords[0][1];
+    const endCol = coords[1][1];
+    for(let j = startCol; j >= endCol; j--){
+        const buttonId = 'button-'+ startRow +','+j;
+        const button = document.getElementById(buttonId);
+        button.style.backgroundColor = color;
     }
 }
 function updatePlayerList(playerList){
