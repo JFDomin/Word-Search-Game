@@ -1,3 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+.press-start-2p-regular {
+    font-family: "Press Start 2P", system-ui;
+    font-weight: 400;
+    font-style: normal;
+}
+
+:root {
+    --bg-color: #000000;
+    --second-bg-color: #790000;
+    --text-color: #fff;
+    --main-color: #c92306;
+}
+
+html {
+    font-size: 75%;
+    overflow-x: hidden;
+    background-color: var(--bg-color);
+    background-repeat: no-repeat;
+
+}
+
+#title {
+    color: var(--main-color);
+    font-size: 3rem;
+    font-weight: 1000px;
+    text-align: center;
+    font-family: "Press Start 2P", system-ui;
+
+}
+
 #wordGrid {
     margin: auto;
     display: flex;
@@ -91,55 +123,131 @@ button::-moz-focus-inner {
 }
 
 /* Yellow */
+/* Lobby */
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    margin-top: 50px;
+}
+
+/* Styles for the lobby */
+.lobby {
+    padding: 10px;
+    background-color: var(--second-bg-color, #790000);
+    border-radius: 5px;
+    font-size: 16px;
+    width: 300px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+
+}
+
+/* Styles for the WaitingPlayers section */
+.waiting-players {
+    background-color: #d3ddd1;
+    padding: 10px;
+
+
+    font-size: 16px;
+    width: 300px;
+    text-align: center;
+}
+
+#input-data {
+    padding: 10px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    outline: none;
+    /* Remove the default focus outline */
+    transition: border-color 0.3s ease;
+}
+
+#input-data:focus {
+    border-color: #007bff;
+}
+
+::placeholder {
+    color: #aaa;
+    font-family: "Press Start 2P", system-ui;
+    font-size: 12px;
+}
+
+#join-button {
+    padding: 10px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    font-size: 10px;
+    outline: none;
+    /* Remove the default focus outline */
+    transition: border-color 0.3s ease;
+    font-family: "Press Start 2P", system-ui;
+}
+
+#error {
+    /* error message, if no nickname */
+    font-family: "Press Start 2P", system-ui;
+    font-size: 10px;
+}
+
 
 /*chat*/
-#chat{
+#chat {
     width: 300px;
     margin: 20px auto;
-    border: 1px solid #ccc;
+    border: 1px solid #ffffff;
     padding: 10px;
+    background-color: var(--second-bg-color);
 }
-#message-container{
+
+#message-container {
     height: 200px;
     overflow-y: scroll;
     border-bottom: 1px solid #ccc;
     margin-bottom: 10px;
 }
-#chat-input{
+
+#chat-input {
     width: 70%;
     padding: 5px;
     margin-right: 5px;
 }
+
 #send-button {
     padding: 5px 10px;
 }
+
 #leaderboard-container table {
     width: 100%;
-    border-collapse: collapse; 
+    border-collapse: collapse;
 }
 
 #leaderboard-container th {
     padding: 10px;
     text-align: left;
-    font-weight: bold; 
-    color: #ffffff; 
-    background-color: #008000; 
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #008000;
 }
 
 #leaderboard-container td {
     padding: 10px;
-    border-top: 1px solid #ddd; 
-    background-color: #32CD32; 
+    border-top: 1px solid #ddd;
+    background-color: #32CD32;
 }
 
 #leaderboard-container tr:nth-child(even) {
-    background-color: #3CB371; 
+    background-color: #3CB371;
 }
 
 #leaderboard-container {
     display: none;
     position: fixed;
-    top: 60%; 
+    top: 60%;
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: white;
@@ -151,5 +259,5 @@ button::-moz-focus-inner {
     height: 80%;
     max-width: 600px;
     max-height: 600px;
-    overflow: auto; 
+    overflow: auto;
 }
