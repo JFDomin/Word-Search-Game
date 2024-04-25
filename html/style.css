@@ -261,3 +261,10 @@ button::-moz-focus-inner {
     max-height: 600px;
     overflow: auto;
 }
+
+#timer {
+    font-size: 50px;
+    font-weight: bold; 
+    color: red;
+    font-family: "Press Start 2P", system-ui;
+}
