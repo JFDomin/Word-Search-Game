@@ -229,10 +229,6 @@ function handleNickEnter(){
         error.textContent = "";
         console.log("player joined: ", nickname);
         joinButton.disabled = true;
-        const nicknameBar = document.getElementById('input-data');
-        nicknameBar.style.display === "none";
-        joinButton.style.display = "none"; 
-
     }
 
 }
