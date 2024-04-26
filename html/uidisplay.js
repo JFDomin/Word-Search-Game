@@ -314,7 +314,6 @@ connection.onmessage = function (evt) {
     const joinButton = document.getElementById("join-button");
     var msg;
     msg = evt.data;
-    console.log("websocket message" + msg); 
     const obj = JSON.parse(msg);
 
     if('NotUnique' === obj ){
