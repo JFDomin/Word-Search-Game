@@ -271,6 +271,16 @@ button::-moz-focus-inner {
     font-family: "Press Start 2P", system-ui;
 }
 
+#join-button:hover {
+    border-color: #007bff;
+}
+
+#join-button:active {
+    border-color: #007bff;
+    box-shadow: 0 5px #666666;
+    transform: translateY(4px);
+}
+
 #error {
     /* error message, if no nickname */
     font-family: "Press Start 2P", system-ui;
