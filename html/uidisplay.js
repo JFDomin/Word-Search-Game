@@ -314,6 +314,7 @@ connection.onmessage = function (evt) {
     const joinButton = document.getElementById("join-button");
     var msg;
     msg = evt.data;
+    console.log("websocket message" + msg); 
     const obj = JSON.parse(msg);
 
     if('NotUnique' === obj ){
@@ -379,10 +380,12 @@ connection.onmessage = function (evt) {
             countdownTimer(600); // set to 10 minutes
         }
         else if('awardWord' in obj){
+            // need to implement sort and how to handle how it shows up on the screen
             const coords = JSON.parse(obj.selectedCells);
             const color = obj.playerColor;
             const orientation = obj.orientation;
             console.log(orientation);
+            console.log("player is: " + obj.nickname + " and score is: " + obj.score);
             if(orientation === 'horizontal'){
                 highlightHorizontal(coords,color);
             } 

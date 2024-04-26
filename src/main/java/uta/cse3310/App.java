@@ -332,10 +332,12 @@ public class App extends WebSocketServer implements Runnable{
                 String orientation = G.orientation(U.selectedCells);
                 jsonObject.addProperty("orientation", orientation);
                 jsonObject.addProperty("nickname", U.nickname);
+                jsonObject.addProperty("score", p.score); 
                 //  + U.GameId + p.playerColor + Arrays.deepToString(U.selectedCells)+ U.nickname
                 //String awardPoints = gson.toJson("awardWord"+ U.GameId+ p.playerColor+ U.selectedCells+ U.nickname);
                 String awardPoints = gson.toJson(jsonObject);
-                System.out.println(p.nickname +": "+p.score);
+                // System.out.println(p.nickname +": "+p.score);
+                System.out.println("The string is: " + awardPoints);
                 broadcast(awardPoints);
               }
             }
