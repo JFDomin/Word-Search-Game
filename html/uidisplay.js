@@ -368,8 +368,6 @@ connection.onmessage = function (evt) {
         }
         else if ('ActualGameStart' in obj){
             document.getElementById('Lobby').style.display = 'none';
-            document.getElementsByClassName('lobby').style.display ='none';
-            document.getElementsByClassName('waiting-players').style.display ='none';
             document.getElementById('table-container').style.display = 'block';
             document.getElementById('WaitingPlayers').style.display = 'none';
             document.getElementById('timer').style.display = 'block';
