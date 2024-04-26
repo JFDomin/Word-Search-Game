@@ -222,7 +222,7 @@ button::-moz-focus-inner {
     margin: 20px auto;
     border: 1px solid #ffffff;
     padding: 10px;
-    background-color: var(--second-bg-color);
+    background-color: solid gray;
 }
 
 #message-container {
@@ -231,6 +231,7 @@ button::-moz-focus-inner {
     border-bottom: 1px solid #ccc;
     margin-bottom: 10px;
 }
+
 
 #chat-input {
     width: 70%;

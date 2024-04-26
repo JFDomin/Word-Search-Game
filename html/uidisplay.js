@@ -90,26 +90,44 @@ console.error("websocket error: ",error);
 }; */
 
 document.getElementById("send-button").addEventListener("click",sendMessage);
+const messageContainer = document.getElementById('message-container');
 //sending message
 function sendMessage() {
   const input_element = document.getElementById("chat-input");
-  const message = input_element.ariaValueMax.trim();
+  const message = document.getElementById("chat-input").value;
+  console.log(nickname, ": ",message);
 
   if (message !== "") {
-    const chatMessage = {
-    type: "chat",
-    sender: nickname,
-    message: message
-  };
-  connection.send(JSON.stringify(chatMessage));
-  input_element.value = "";
+    U = new UserEvent;
+    U.nickname = nickname;
+    U.button = "chatMsg";
+    U.msg = message;
+
+  
+    connection.send(JSON.stringify(U));
+    console.log("sending message:",message);
+    messageContainer.textContent += message + '\n';
+    messageContainer.scrollTop = messageContainer.scrollHeight;
+    displayChatMessage(nickname,message);
+    input_element.value = ""; //resets input box to show placeholder after message sent
 }
+
 }
+
+document.getElementById("send-button").addEventListener("click",sendMessage);
+document.getElementById('chat-input').addEventListener('keydown',function(event){
+  if(event.key === 'Enter') {
+    sendMessage();
+  }
+})
+
+
 
 //displaying message
 function displayChatMessage(sender, message) {
   const chatMessages = document.getElementById("message-container");
   const message_element = document.createElement("div");
+  message_element.classList.add('message')
   message_element.textContent = '${sender}: ${message}';
   chatMessages.appendChild(message_element);
 }
@@ -140,13 +158,7 @@ timerInterval = setInterval(function() {
   }
 }, 1000);
 }
-//displaying message
-function displayChatMessage(sender, message) {
-const chatMessages = document.getElementById("chat-input");
-const message_element = document.createElement("div");
-message_element.textContent = sender + ": " + message;
-chatMessages.appendChild(message_element);
-}
+
 // Function to display the leaderboard
 function displayLeaderboard() {
 const leaderboardContainer = document.getElementById("leaderboard-container");
