@@ -308,6 +308,7 @@ connection.onopen = function (evt) {
 connection.onclose = function (evt) {
     console.log("close");
     document.getElementById("topMessage").innerHTML = "Server Offline"
+    const offline = document.getElementById("topMessage").style.color = "crimson";
 }
 connection.onmessage = function (evt) {
     const joinButton = document.getElementById("join-button");

@@ -113,7 +113,8 @@ public class App extends WebSocketServer implements Runnable{
      WordSearchGame G = null;
     
      for(WordSearchGame i: ActiveGames){
-      if((i.player == uta.cse3310.PlayerType.PLAYER1 || i.player == uta.cse3310.PlayerType.PLAYER2 || i.player == uta.cse3310.PlayerType.PLAYER3) && i.isStarted != true){
+      // i.player == uta.cse3310.PlayerType.PLAYER1 || i.player == uta.cse3310.PlayerType.PLAYER2 || i.player == uta.cse3310.PlayerType.PLAYER3
+      if((i.numPlayers < 4) && i.isStarted != true){
         G = i;
         System.out.println("Match found");
       }
