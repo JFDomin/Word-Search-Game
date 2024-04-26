@@ -1,5 +1,7 @@
 package uta.cse3310;
 import java.util.ArrayList;
+import org.java_websocket.WebSocket;
+import java.util.Random;
 
 public class Player{
     public int playerID;
@@ -8,6 +10,7 @@ public class Player{
     public int score = 0;
     public String playerColor;
     boolean isReady;
+    transient WebSocket conn;
     
     public Player(String nickname) {
         this.nickname = nickname;
@@ -27,7 +30,10 @@ public class Player{
     }
      public void setPlayerColor() {
     // Switch statement to handle different player types and return corresponding colors
-    switch (playerID) {
+    //make random number so it chooses one of the four 
+    Random rand = new Random();
+    int x = rand.nextInt(4);
+    switch (x) {
         case 0:
             playerColor = "#1eff00";
             break; // Green
@@ -42,7 +48,6 @@ public class Player{
             playerColor = "#ffff00";
             break;
              // Yellow
-
     }
 }
 

@@ -3,6 +3,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Arrays;
+import org.java_websocket.WebSocket;
+
 public class WordSearchGame{
     public int gameID;
     public ArrayList<Player> players = new ArrayList<>();
@@ -21,6 +23,8 @@ public class WordSearchGame{
     int numPlayersReady = 0;
     boolean isStarted = false;
     ArrayList<int[][]> foundCoords = new ArrayList<>();
+    transient ArrayList<WebSocket> conns = new ArrayList<>();
+    ArrayList<String> usedColors = new ArrayList<>();
     public enum GameState {
         NOT_STARTED,
         IN_PROGRESS,

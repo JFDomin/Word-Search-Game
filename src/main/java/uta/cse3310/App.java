@@ -86,6 +86,7 @@ public class App extends WebSocketServer implements Runnable{
   int numPlayersReady = 0;
   ArrayList<Player> players = new ArrayList<>();
   ArrayList<String> playerNames = new ArrayList<>();
+  ArrayList<WebSocket> activeConnections = new ArrayList<>();
   
   private int GameId = 1;
 
@@ -160,6 +161,8 @@ public class App extends WebSocketServer implements Runnable{
       }
       E.YouAre = G.player;
       E.GameId = G.gameID;
+      G.conns.add(conn);
+      activeConnections.add(conn);
       System.out.println(E.YouAre + " " + E.GameId);
       // allows the websocket to give us the Game when a message arrives..
     // it stores a pointer to G, and will give that pointer back to us
@@ -188,9 +191,29 @@ public class App extends WebSocketServer implements Runnable{
     // Retrieve the game tied to the websocket connection
      WordSearchGame G = conn.getAttachment();
      System.out.println(G.gameID);
-     G = null;
+     removePlayer(G, conn);
+    //  G = null;
   }
-
+  public void removePlayer(WordSearchGame G, WebSocket conn){
+    G.numPlayers--;
+    activeConnections.remove(conn);
+    G.conns.remove(conn);
+    ArrayList<Player> playerToRemove = new ArrayList<>();
+    for(Player p: G.players){
+      if(p.conn == conn){
+        if(p.isReady){
+          G.numPlayersReady--;
+        }
+        if(p.nickname != null){
+          playerNames.remove(p.nickname);
+          G.usedColors.remove(p.playerColor);
+        }
+        playerToRemove.add(p);
+      }
+    }
+    G.players.removeAll(playerToRemove);
+    broadcastPlayerList(G.gameID);
+  }
   @Override
   public void onMessage(WebSocket conn, String message) {
     
@@ -211,6 +234,9 @@ public class App extends WebSocketServer implements Runnable{
         for(WordSearchGame G : ActiveGames){
         if(G.gameID == U.GameId){
           player1.playerID = 0;
+          player1.conn = conn;
+          player1.setPlayerColor();
+          G.usedColors.add(player1.playerColor);
           G.players.add(player1);
           break;
         }
@@ -224,6 +250,13 @@ public class App extends WebSocketServer implements Runnable{
           for(WordSearchGame G : ActiveGames){
             if(G.gameID == U.GameId){
               player1.playerID = G.players.size();
+              player1.conn = conn;
+              //set the color of the player and add it to the usedColors list
+              player1.setPlayerColor();
+              while(G.usedColors.contains(player1.playerColor)){
+                player1.setPlayerColor();
+              }
+              G.usedColors.add(player1.playerColor);
               G.players.add(player1);
             break;
             }
@@ -291,7 +324,6 @@ public class App extends WebSocketServer implements Runnable{
             for(Player p: G.players){
               if(p.nickname.equals(U.nickname)){
                 p.score += 1;
-                p.setPlayerColor();
                 JsonObject jsonObject = new JsonObject();
                 jsonObject.addProperty("awardWord", "awardWord");
                 jsonObject.addProperty("GameId", U.GameId);
