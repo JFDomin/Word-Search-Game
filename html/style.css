@@ -177,6 +177,48 @@ button::-moz-focus-inner {
     padding: 20px;
 }
 
+#ready-btn {
+    padding: 10px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    font-size: 10px;
+    outline: none;
+    /* Remove the default focus outline */
+    transition: border-color 0.3s ease;
+    font-family: "Press Start 2P", system-ui;
+}
+
+#ready-btn:hover {
+    border-color: #007bff;
+}
+
+#ready-btn:active {
+    border-color: #007bff;
+    box-shadow: 0 5px #666666;
+    transform: translateY(4px);
+}
+
+#start-btn {
+    padding: 10px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    font-size: 10px;
+    outline: none;
+    /* Remove the default focus outline */
+    transition: border-color 0.3s ease;
+    font-family: "Press Start 2P", system-ui;
+}
+
+#start-btn:hover {
+    border-color: #007bff;
+}
+
+#start-btn:active {
+    border-color: #007bff;
+    box-shadow: 0 5px #666666;
+    transform: translateY(4px);
+}
+
 #input-data {
     padding: 10px;
     border: 2px solid #ccc;
