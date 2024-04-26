@@ -313,9 +313,8 @@ connection.onmessage = function (evt) {
     const joinButton = document.getElementById("join-button");
     var msg;
     msg = evt.data;
-    console.log("Message received: " + msg);
     const obj = JSON.parse(msg);
-    
+
     if('NotUnique' === obj ){
         joinButton.disabled = false;
         error.textContent = "Name not Unique";
@@ -326,6 +325,11 @@ connection.onmessage = function (evt) {
         error.textContent = "Not Enough Players Ready";
         error.style.color = "red";
         return;
+    }
+    if('words' in obj){
+    }
+    else{
+        console.log("Message received: ", msg);
     }
     if (obj.type == "wordGrid"){
         //console.log(obj.data);
