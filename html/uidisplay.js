@@ -132,6 +132,20 @@ function displayChatMessage(sender, message) {
   chatMessages.appendChild(message_element);
 }
 
+function toggleChat(){
+    const chatContainer = document.getElementById("chat");
+      if (chatContainer.style.display === "block") {
+        chatContainer.style.display = "none"; 
+      } else {
+        displayChatMessage();
+        chatContainer.style.display = "block"; 
+      }
+     }
+    
+    function showChat() {
+    toggleChat();
+    }
+
 function countdownTimer(duration) {
 var timer = duration; 
 var minutes;
