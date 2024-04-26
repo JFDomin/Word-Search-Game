@@ -137,7 +137,7 @@ function toggleChat(){
       if (chatContainer.style.display === "block") {
         chatContainer.style.display = "none"; 
       } else {
-        displayChatMessage();
+        //displayChatMessage();
         chatContainer.style.display = "block"; 
       }
      }
