@@ -155,6 +155,10 @@ timerInterval = setInterval(function() {
   if (--timer < 0) {
     stopTimer();
     document.getElementById("timer").textContent = "Game Over!";
+    U = new UserEvent;
+    U.GameId = gameid;
+    U.button = "GameOver";
+    connection.send(JSON.stringify(U));
   }
 }, 1000);
 }
