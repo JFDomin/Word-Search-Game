@@ -30,18 +30,14 @@ html {
 
 }
 
-#wordGrid {
-    margin: auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-}
 
 #table-container {
+    position: relative;
     width: 100%;
     border-collapse: collapse;
     text-align: center;
+    max-width: 800x; /* Adjust max-width as needed */
+    margin-top: 20px;
 }
 
 .puzzleCell {
@@ -124,7 +120,7 @@ button::-moz-focus-inner {
     background-color: var(--player4-color, #ffff00);
 }
 
-/* Yellow */
+
 /* Lobby */
 
 .container {
@@ -141,7 +137,7 @@ button::-moz-focus-inner {
     background-color: var(--second-bg-color, #790000);
     border-radius: 5px;
     font-size: 16px;
-    width: 300px;
+    width: 450px;
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -153,10 +149,32 @@ button::-moz-focus-inner {
 .waiting-players {
     background-color: #d3ddd1;
     padding: 10px;
+    width: 500px;
     font-family: "Press Start 2P", system-ui;
     font-size: 16px;
-    width: 300px;
+    width: 800px;
+    height: fit-content;
     text-align: center;
+    border-radius: 5px;
+}
+#WaitingPlayers {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: center;
+    padding: 20px;
+    margin-left: 5px;
+    justify-content: center;
+}
+
+#playerContainer {
+    display: flex;
+    justify-content: space-between;
+    display: flex;
+    flex-direction: row;
+    width: 80%;
+    margin-left: 10px;
+    padding: 20px;
 }
 
 #input-data {
@@ -167,6 +185,7 @@ button::-moz-focus-inner {
     outline: none;
     /* Remove the default focus outline */
     transition: border-color 0.3s ease;
+    font-family: "Press Start 2P", system-ui;
 }
 
 #input-data:focus {
@@ -223,9 +242,34 @@ button::-moz-focus-inner {
     padding: 5px 10px;
 }
 
+#leaderboardbutton {
+    position: absolute;
+    padding: 10px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    font-size: 10px;
+    outline: none;
+    /* Remove the default focus outline */
+    transition: border-color 0.3s ease;
+    font-family: "Press Start 2P", system-ui;
+    top: 90px;
+    right: 10px;
+}
+
+#leaderboardbutton:hover {
+    border-color: #007bff;
+}
+
 #leaderboard-container table {
     width: 100%;
     border-collapse: collapse;
+}
+#leaderboard-container h2 {
+    padding: 10px;
+    text-align: left;
+    font-weight: bold;
+    color: #000000;
+    font-family: "Press Start 2P", system-ui;
 }
 
 #leaderboard-container th {
@@ -234,12 +278,14 @@ button::-moz-focus-inner {
     font-weight: bold;
     color: #ffffff;
     background-color: #008000;
+    font-family: "Press Start 2P", system-ui;
 }
 
 #leaderboard-container td {
     padding: 10px;
     border-top: 1px solid #ddd;
     background-color: #32CD32;
+    font-family: "Press Start 2P", system-ui;
 }
 
 #leaderboard-container tr:nth-child(even) {
