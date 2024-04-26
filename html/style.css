@@ -21,15 +21,35 @@ html {
 
 }
 
-#title {
+.title {
     color: var(--main-color);
     font-size: 3rem;
-    font-weight: 1000px;
+    font-weight: bold;
+    /* Changed from 1000px to bold */
     text-align: center;
     font-family: "Press Start 2P", system-ui;
-
+    position: relative;
+    /* Added for absolute positioning of cursor */
 }
 
+.title span::before {
+    content: 'Word Search Game';
+    color: var(--main-color);
+    animation: flicker 1s infinite alternate;
+    /* Only flicker animation */
+}
+
+@keyframes flicker {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
 
 #table-container {
     position: relative;
@@ -260,12 +280,23 @@ button::-moz-focus-inner {
 
 /*chat*/
 #chat {
+    display: none;
+    position: fixed;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     width: 300px;
     margin: 20px auto;
-    border: 1px solid #ffffff;
+    border: 1px solid #000000;
     padding: 10px;
     background-color: var(--second-bg-color);
     border-radius: 5px;
+    z-index: 999;
+    width: 50%;
+    height: 50%;
+    max-width: 500px;
+    max-height: 300px;
+    overflow: auto;
 }
 
 #chatButton {
@@ -399,6 +430,6 @@ button::-moz-focus-inner {
 #timer {
     font-size: 50px;
     font-weight: bold; 
-    color: red;
+    color: var(--main-color);
     font-family: "Press Start 2P", system-ui;
 }
