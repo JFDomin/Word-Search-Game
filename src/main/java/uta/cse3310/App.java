@@ -318,6 +318,9 @@ public class App extends WebSocketServer implements Runnable{
       String chatMessage = gson.toJson(U);
       broadcast(chatMessage);
      }
+     else if(U.button.equals("GameOver")) {
+      System.out.println("game over for game id: " + U.GameId); 
+     }
      
   }
   //this is to search through active games and fine the one we are looking for
