@@ -60,6 +60,7 @@ html {
     font-size: 24px;
     margin-top: 10px;
     color: var(--main-color);
+    font-family: "Press Start 2P", system-ui;
 }
 
 #table-container {
