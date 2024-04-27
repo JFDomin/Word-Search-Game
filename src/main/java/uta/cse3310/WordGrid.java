@@ -24,6 +24,7 @@ public class WordGrid {
     double diagDown = 0;
     ArrayList<int [][]> wordCoordinates = new ArrayList<>();
     final double minPercentage = 0.15;
+    ArrayList<Double> stats = new ArrayList<>();
 
     public WordGrid(int size, ArrayList<String> wordBank){
         grid = new Character[size][size];
@@ -41,6 +42,13 @@ public class WordGrid {
         totalCharCount += validCharCount;
         density = (validCharCount)/(totalCharCount);
         System.out.println(density);
+        double numWords = usedWords.size();
+        double horPercentage = horizontal/numWords;
+        double vertPercentage = vertical/numWords;
+        double diagUpPerc = diagUp/numWords;
+        double diagDownPerc = diagDown/numWords;
+        double revPerc = reverse/numWords;
+        //(density < 0.67) || ( (horPercentage < minPercentage) && (vertPercentage < minPercentage) && (diagUpPerc < minPercentage) && (diagDownPerc < minPercentage) && (revPerc < minPercentage))
         while(density < 0.67){
             resetGrid();
             generateGrid(word_bank);
@@ -266,5 +274,19 @@ public class WordGrid {
 
         System.out.println( horizontal+"      \t" + vertical+"      \t" + diagUp+"   \t" +diagDown+ "    \t" + reverse);
         System.out.println("horizontal: " + horPercentage+ " vert: "+ vertPercentage+" diagUp: "+diagUpPerc + " diagDown: "+ diagDownPerc+ "reverse: " + revPerc);
+    }
+    public void calculateStats(){
+        double numWords = usedWords.size();
+        double horPercentage = horizontal/numWords;
+        double vertPercentage = vertical/numWords;
+        double diagUpPerc = diagUp/numWords;
+        double diagDownPerc = diagDown/numWords;
+        double revPerc = reverse/numWords;
+        stats.add(density);
+        stats.add(horPercentage);
+        stats.add(diagDownPerc);
+        stats.add(diagDownPerc);
+        stats.add(vertPercentage);
+        stats.add(revPerc);
     }
 }

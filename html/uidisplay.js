@@ -50,15 +50,7 @@ playerDiv.className = "player";
 playerDiv.style.backgroundColor = color;
 document.getElementById("playerContainer").appendChild(playerDiv);
 }
-//function toggleSelected(button) {
-// Prevent selection if the game hasn't started
-//if (button.classList.contains("selected")) return; // Prevent re-selecting a letter
 
-// Toggle selected class and player-specific color class for the button
-// button.classList.toggle("selected");
-
-// Implement logic for what happens after a letter is selected by the player
-//}
 
 function page2(){
 document.getElementById("page1").style.display = "none";
@@ -66,28 +58,6 @@ document.getElementById("page2").style.display = "block";
 document.getElementById("page2").innerHTML = displayGrid();
 }
 
-//not needed, just keeping for reference
-/*
-//connect chat to websocket
-
-const connection = new WebSocket("ws://localhost:9116");
-
-connection.onopen = function () {
-console.log(" chat connection established.");
-};
-
-connection.onmessage = function (event) {
-const data = JSON.parse(event.data);
-if (data.type === "chat") {
-  displayChatMessage(data.sender,data.message);
-} else {
-  console.log("recieved message: ", data);
-}
-};
-
-connection.onerror = function (error) {
-console.error("websocket error: ",error);
-}; */
 
 document.getElementById("send-button").addEventListener("click",sendMessage);
 const messageContainer = document.getElementById('message-container');
@@ -294,7 +264,6 @@ function startGame(){
 }
 var connection = null;
 var serverUrl = "ws://" + window.location.hostname +":"+ (parseInt(location.port) + 100);
-document.getElementById("topMessage").innerHTML = "?";
 // Create the connection with the server
 connection = new WebSocket(serverUrl);
 
@@ -330,6 +299,13 @@ connection.onmessage = function (evt) {
     else{
         console.log("Message received: ", msg);
     }
+    if('version' in obj){
+        console.log(obj.version);
+        const version = obj.version;
+        const title = document.getElementsByClassName('title');
+        title[0].innerHTML = "Word Search Game " + version;
+        return;
+    }
     if (obj.type == "wordGrid"){
         //console.log(obj.data);
         //displayGrid(obj.data);
@@ -362,10 +338,6 @@ connection.onmessage = function (evt) {
         console.log(msg);
     }
     if('updateLeaderboard' in obj){
-        // const leaderboardContainer = document.getElementById("leaderboard-container");
-        // leaderboardContainer.style.displau = "block";
-        // const leaderboardBody = document.getElementById("leaderboard-body");
-        // leaderboardBody.innerHTML = "";
         const leaderboardScores= JSON.parse(obj.updateLeaderboard);
         updateLeaderboard(leaderboardScores);
     }       
@@ -383,7 +355,7 @@ connection.onmessage = function (evt) {
             document.getElementById('table-container').style.display = 'block';
             document.getElementById('WaitingPlayers').style.display = 'none';
             document.getElementById('timer').style.display = 'block';
-            countdownTimer(60); // set to 10 minutes
+            countdownTimer(600); // set to 10 minutes
         }
         else if('awardWord' in obj){
             // need to implement sort and how to handle how it shows up on the screen
@@ -413,6 +385,39 @@ connection.onmessage = function (evt) {
             document.getElementById('timer').style.display = 'none';
             document.getElementById('GameOver').style.display = 'block';
             document.getElementById('award-winner').innerHTML = 'Winner is ' + obj.nickname + ' with a score of ' + obj.score + '!';
+        }
+        else if('gridStats' in obj){
+            console.log(msg);
+            const stats = JSON.parse(obj.gridStats);
+            console.log(stats[0]);
+            document.getElementById('topMessage').style.color  = "red";
+            let statsString = "Grid Stats:<br> ";
+            for(let i =0; i < stats.length; i++){
+                let statLabel = "";
+                switch(i){
+                    case 0:
+                        statLabel = "Density";
+                        break;
+                    case 1:
+                        statLabel = "Horizontal Percentage";
+                        break;
+                    case 2:
+                        statLabel = "Diagonal Down Percentage";
+                        break;
+                    case 3:
+                        statLabel = "Diagonal Up Percentage";
+                        break;
+                    case 4:
+                        statLabel = "Vertical Percentage";
+                        break;
+                    case 5:
+                        statLabel = "Reverse Percentage";
+                        break;
+                }
+                statsString += statLabel + ": " + stats[i].toFixed(4)+"<br>";
+            }
+            document.getElementById('topMessage').innerHTML = statsString;
+
         }
     }
 }

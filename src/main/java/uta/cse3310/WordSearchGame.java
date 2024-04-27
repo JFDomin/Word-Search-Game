@@ -19,7 +19,8 @@ public class WordSearchGame{
     ArrayList<String> words = WordBank.readFileIntoArray("src/main/java/uta/cse3310/filtered_word 1.txt");
     ArrayList<String> found = new ArrayList<>();
     ArrayList<String> wordBank = WordBank.wordBank(found, words);
-    WordGrid grid = new WordGrid(30 ,wordBank);
+    WordGrid grid = new WordGrid(35 ,wordBank);
+    ArrayList<WordGrid> selectGrid = new ArrayList<>();
     int numPlayersReady = 0;
     boolean isStarted = false;
     ArrayList<int[][]> foundCoords = new ArrayList<>();
@@ -30,13 +31,22 @@ public class WordSearchGame{
         IN_PROGRESS,
         ENDED 
     }
-
+    public void multiGrids(){
+        for(int i = 0; i < 7; i++){
+            WordGrid newGrid = new WordGrid(35,wordBank);
+            selectGrid.add(newGrid);
+        }
+    }
     
     public void startGame() {
         grid.generateGrid(wordBank);
     }
+    public void startGame(int gridNo){
+        multiGrids();
+        grid = selectGrid.get(gridNo);
+        grid.generateGrid(wordBank);
+    }
     public Character[][] getwordgrid(){ 
-        //WordGrid grid = new WordGrid(50,wordBank);      
         return grid.getgrid();
     }
     //check to see if the coordinates have been found before returns true if they havent been found
@@ -83,33 +93,6 @@ public class WordSearchGame{
         }
         return true;
     }
-  
-    public boolean endGame() {
-        return true;
-    }
- 
-    public void updateGameScores() {
- 
-    }
- 
-    public boolean selectWord() {
-        return true;
-    }
-    public int awardWord(){
-        return 0; 
-}
-    public boolean validateWord() {
-        return true;
-    }
-    public void updateGameState()
-    {
-    }
 
-public void displayPlayerStats()
-    {
-    }
-    // public void addPlayer(Player player){
-    //     players
-    // }
 
 }

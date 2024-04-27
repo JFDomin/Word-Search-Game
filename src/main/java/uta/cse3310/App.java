@@ -90,7 +90,9 @@ public class App extends WebSocketServer implements Runnable{
   ArrayList<Player> players = new ArrayList<>();
   ArrayList<String> playerNames = new ArrayList<>();
   ArrayList<WebSocket> activeConnections = new ArrayList<>();
-  
+  String version = System.getenv("VERSION");
+  String test_grid = System.getenv("TEST_GRID");
+
   private int GameId = 1;
 
   private int connectionId = 0;
@@ -117,7 +119,6 @@ public class App extends WebSocketServer implements Runnable{
      WordSearchGame G = null;
     
      for(WordSearchGame i: ActiveGames){
-      // i.player == uta.cse3310.PlayerType.PLAYER1 || i.player == uta.cse3310.PlayerType.PLAYER2 || i.player == uta.cse3310.PlayerType.PLAYER3
       if((i.numPlayers < 4) && i.isStarted != true){
         G = i;
         System.out.println("Match found");
@@ -126,7 +127,7 @@ public class App extends WebSocketServer implements Runnable{
       
       //no matches? create new game
       if(G == null){
-        if(ActiveGames.size() <= 25){
+        if(ActiveGames.size() <= 5){
           G = new WordSearchGame();
           G.gameID = GameId;
           GameId++;
@@ -134,13 +135,20 @@ public class App extends WebSocketServer implements Runnable{
           G.numPlayers++;
           ActiveGames.add(G);
           System.out.println("creating new game");
-          G.startGame();
+          if(test_grid != null){
+            int gridNo = Integer.valueOf(test_grid);
+            G.startGame(gridNo);
+          }
+          else{
+            G.startGame();
+          }
           System.out.println("G.players is " + G.player);
           Gson gson = new Gson();
           Character[][] wordGrid = G.getwordgrid();
           String gridJson = gson.toJson(wordGrid);
           conn.send("{\"type\": \"wordGrid\",\"data\": "+ gridJson + "}");
           G.grid.printGridStats();
+          G.grid.calculateStats();
         }
       }
       else{
@@ -186,6 +194,18 @@ public class App extends WebSocketServer implements Runnable{
     String playerListJson = gson.toJson(G.players);
     String playerListMessage = "{\"GameId\": " + G.gameID + ", \"playerList\": " + playerListJson + "}";
     conn.send(playerListMessage);
+    if(version != null){
+      JsonObject jsonObject = new JsonObject();
+      jsonObject.addProperty("version", version);
+      String jsonVers = gson.toJson(jsonObject);
+      broadcast(jsonVers);
+    }
+    ArrayList<Double> stats = G.grid.stats;
+    JsonObject obj = new JsonObject();
+    obj.addProperty("gridStats", gson.toJson(stats));
+    obj.addProperty("GameId", G.gameID);
+    String statsJSON = gson.toJson(obj);
+    broadcast(statsJSON);
   }
   
   @Override
