@@ -79,6 +79,8 @@ public class App extends WebSocketServer implements Runnable{
   private BufferedReader bufferedReader;
   private BufferedWriter bufferedWriter;
   private String clientUsername;
+  private Player currentWinner; 
+  private int winnerScore; 
 
 
   private WordGrid Grid;
@@ -356,9 +358,35 @@ public class App extends WebSocketServer implements Runnable{
       broadcast(chatMessage);
      }
      else if(U.button.equals("GameOver")) {
+      for (WordSearchGame G : ActiveGames) {
+        if (G.gameID == U.GameId) {
+          getWinner(G);
+          JsonObject jsonObject = new JsonObject();
+          jsonObject.addProperty("GameOver", "GameOver");
+          jsonObject.addProperty("GameId", U.GameId);
+          jsonObject.addProperty("nickname", currentWinner.nickname);
+          jsonObject.addProperty("score", winnerScore);
+          String gameOver = gson.toJson(jsonObject);
+          broadcast(gameOver);
+        }
+      }
       System.out.println("game over for game id: " + U.GameId); 
      }
      
+  }
+
+  public void getWinner(WordSearchGame G) {
+    Player winner = null;
+    int maxScore = 0;
+    for (Player p : G.players) {
+      if (p.score > maxScore) {
+        maxScore = p.score;
+        winner = p;
+      }
+    }
+    System.out.println("winner is: " + winner.nickname);
+    currentWinner = winner;
+    winnerScore = maxScore;
   }
 
   public void updateScore(){

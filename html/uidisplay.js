@@ -408,6 +408,12 @@ connection.onmessage = function (evt) {
                 highlightReverse(coords,color);
             }                                                                                                                                                                                                                                                                                                
         }
+        else if('GameOver' in obj){
+            document.getElementById('table-container').style.display = 'none';
+            document.getElementById('timer').style.display = 'none';
+            document.getElementById('GameOver').style.display = 'block';
+            document.getElementById('award-winner').innerHTML = 'Winner is ' + obj.nickname + ' with a score of ' + obj.score + '!';
+        }
     }
 }
 
