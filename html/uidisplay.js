@@ -302,8 +302,8 @@ connection.onmessage = function (evt) {
     if('version' in obj){
         console.log(obj.version);
         const version = obj.version;
-        const title = document.getElementsByClassName('title');
-        title[0].innerHTML = "Word Search Game " + version;
+        const title = document.getElementsByClassName('gameVersion');
+        title[0].innerHTML = "Version: " + version;
         return;
     }
     if (obj.type == "wordGrid"){

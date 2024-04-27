@@ -55,6 +55,12 @@ html {
         opacity: 0;
     }
 }
+.gameVersion {
+    text-align: center;
+    font-size: 24px;
+    margin-top: 10px;
+    color: var(--main-color);
+}
 
 #table-container {
     position: relative;
