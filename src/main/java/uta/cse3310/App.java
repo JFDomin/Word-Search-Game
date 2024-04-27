@@ -65,6 +65,7 @@ import java.util.Arrays;
 import com.google.gson.JsonObject;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import java.util.Comparator;
 
 public class App extends WebSocketServer implements Runnable{
 
@@ -341,6 +342,7 @@ public class App extends WebSocketServer implements Runnable{
                 broadcast(awardPoints);
               }
             }
+            updateScore();
           }
         }
           break;
@@ -358,15 +360,35 @@ public class App extends WebSocketServer implements Runnable{
      }
      
   }
-  //this is to search through active games and fine the one we are looking for
-  public void findGame(){
-    // for(WordSearchGame G: ActiveGames){
-    //   if(G.gameID == U.GameId){
-        
-    //   }
-    // }
-  }
 
+  public void updateScore(){
+    ArrayList<Player> allPlayers = new ArrayList<>();
+    for(WordSearchGame G: ActiveGames){
+      allPlayers.addAll(G.players);
+    }
+    //sort the list of players by comparing the player scores
+    Collections.sort(allPlayers, new Comparator<Player>(){
+      //compare player scores 
+      public int compare(Player p1, Player p2){
+        return Integer.compare(p1.score,p2.score);
+      }
+    });
+    // reverse the order to get highest to lowest score 
+    Collections.reverse(allPlayers);
+    //for every player print their score 
+    for(Player p: allPlayers){
+      System.out.println(p.nickname + " "+ p.score);
+    }
+    broadcastLeaderboard(allPlayers);
+  }
+  public void broadcastLeaderboard(ArrayList<Player> players){
+    Gson gson = new Gson();
+    String leaderboardJson = gson.toJson(players);
+    JsonObject jsonObject = new JsonObject();
+    jsonObject.addProperty("updateLeaderboard", leaderboardJson);
+    String allScores = gson.toJson(jsonObject);
+    broadcast(allScores);
+  }
   public void broadcastGameStart(int gameid){
     WordSearchGame Game = null;
     for(WordSearchGame G: ActiveGames ){

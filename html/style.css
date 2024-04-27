@@ -78,7 +78,7 @@ html {
 }
 
 .puzzleCell.selected {
-    background-color: #ff00f2;
+    border-color: #ff00f2;
 }
 
 /* background color for the selected state */

@@ -176,41 +176,39 @@ timerInterval = setInterval(function() {
   }
 }, 1000);
 }
+function updateLeaderboard(leaderboardScores){
+    const leaderboardContainer = document.getElementById("leaderboard-container");
+    // leaderboardContainer.style.display = "block";
 
-// Function to display the leaderboard
-function displayLeaderboard() {
-const leaderboardContainer = document.getElementById("leaderboard-container");
-leaderboardContainer.style.display = "block";
+    const leaderboardBody = document.getElementById("leaderboard-body");
+    leaderboardBody.innerHTML = ""; 
 
-const leaderboardBody = document.getElementById("leaderboard-body");
-leaderboardBody.innerHTML = ""; 
-
-
-const allScores = yourLeaderboardInstance.getAllScores();
-
-const sortedScores = Object.entries(allScores).sort((a, b) => b[1] - a[1]);
-
-sortedScores.forEach(([name, score], index) => {
+    console.log(leaderboardScores);
+    leaderboardScores.forEach(function(player, index){
     const row = leaderboardBody.insertRow();
     const rankCell = row.insertCell(0); // Insert cell for rank
     const nameCell = row.insertCell(1); // Insert cell for name
     const scoreCell = row.insertCell(2); // Insert cell for score
     rankCell.textContent = index + 1; // Set rank
-    nameCell.textContent = player.name; // Set name
+    nameCell.textContent = player.nickname; // Set name
     scoreCell.textContent = player.score; // Set score
+    rankCell.style.backgroundColor = player.color;
+    nameCell.style.backgroundColor = player.color;
+    scoreCell.style.backgroundColor = player.color;
+
+
 });
 }
+
 
 function toggleLeaderboard() {
 const leaderboardContainer = document.getElementById("leaderboard-container");
 if (leaderboardContainer.style.display === "block") {
     leaderboardContainer.style.display = "none"; 
 } else {
-    displayLeaderboard(); 
     leaderboardContainer.style.display = "block"; 
 }
 }
-
 
 function showLeaderboard() {
 toggleLeaderboard();
@@ -363,8 +361,16 @@ connection.onmessage = function (evt) {
         gameid = obj.GameId;
         console.log(msg);
     }
-            //pay attention to only this game 
-    if(gameid === obj.GameId){
+    if('updateLeaderboard' in obj){
+        // const leaderboardContainer = document.getElementById("leaderboard-container");
+        // leaderboardContainer.style.displau = "block";
+        // const leaderboardBody = document.getElementById("leaderboard-body");
+        // leaderboardBody.innerHTML = "";
+        const leaderboardScores= JSON.parse(obj.updateLeaderboard);
+        updateLeaderboard(leaderboardScores);
+    }       
+    //pay attention to only this game 
+    else if(gameid === obj.GameId){
         if ('playerList' in obj && Array.isArray(obj.playerList)) {
         console.log("got player list");
         //get the gameid out of the message specifically to update if gameid == to the msg gameid
