@@ -383,7 +383,7 @@ connection.onmessage = function (evt) {
             document.getElementById('table-container').style.display = 'block';
             document.getElementById('WaitingPlayers').style.display = 'none';
             document.getElementById('timer').style.display = 'block';
-            countdownTimer(600); // set to 10 minutes
+            countdownTimer(60); // set to 10 minutes
         }
         else if('awardWord' in obj){
             // need to implement sort and how to handle how it shows up on the screen
