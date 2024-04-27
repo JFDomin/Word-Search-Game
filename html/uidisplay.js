@@ -378,6 +378,7 @@ connection.onmessage = function (evt) {
         updatePlayerList(obj.playerList);
         }
         else if ('ActualGameStart' in obj){
+            document.getElementById('wordbank').style.display = 'block';
             document.getElementById('Lobby').style.display = 'none';
             document.getElementById('table-container').style.display = 'block';
             document.getElementById('WaitingPlayers').style.display = 'none';
