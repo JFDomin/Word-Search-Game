@@ -3,14 +3,15 @@ package uta.cse3310;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import java.util.Map;
 
-public class LeaderboardTest extends TestCase {
+public class LeaderBoardTest extends TestCase {
     /**
      * Create the test case
      *
      * @param testName name of the test case
      */
-    public LeaderboardTest(String testName) {
+    public LeaderBoardTest(String testName) {
         super(testName);
     }
 
@@ -18,7 +19,7 @@ public class LeaderboardTest extends TestCase {
      * @return the suite of tests being tested
      */
     public static Test suite() {
-        return new TestSuite(LeaderboardTest.class);
+        return new TestSuite(LeaderBoardTest.class);
     }
 
     /**
