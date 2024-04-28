@@ -19,6 +19,7 @@ public class Lobby {
         ready = false;
         players = new ArrayList<>();
         chat = new Chat();
+        playerNames = new HashSet<>(); // added to make the Lobby Test work properly
     }
 
     public void addPlayer(Player player) {
@@ -61,7 +62,7 @@ public class Lobby {
         checkLobby();
     }
 
-    public void checkLobby() {
+    public boolean checkLobby() {
         System.out.println("Number of Players: " + numPlayers);
         System.out.println("Players Waiting: " + playersWaiting);
         System.out.println("Lobby Ready: " + ready);
@@ -70,6 +71,7 @@ public class Lobby {
         } else {
             ready = false;
         }
+        return ready;
     }
 
     public void generateLobby() {
