@@ -58,18 +58,6 @@ public class Player{
     public boolean leaveGame() {
         return true; 
     }
-     
-    public void chooseStartLetter() {
- 
-    }
- 
-    public void chooseEndLetter() {
- 
-    }
- 
-    public void sendChat() {
- 
-    }
  
     public String assignColor() {
         return playerColor; 
