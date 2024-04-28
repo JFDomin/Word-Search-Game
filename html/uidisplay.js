@@ -65,7 +65,8 @@ const messageContainer = document.getElementById('message-container');
 function sendMessage() {
   const input_element = document.getElementById("chat-input");
   const message = document.getElementById("chat-input").value;
-  console.log(nickname, ": ",message);
+  const name = document.getElementById("input-data").value;
+  console.log(name, ": ",message);
 
   if (message !== "") {
     U = new UserEvent;
@@ -75,10 +76,10 @@ function sendMessage() {
 
   
     connection.send(JSON.stringify(U));
-    console.log("sending message:",message);
-    messageContainer.textContent += message + '\n';
+    console.log(name + " sending message:" + message);
+    messageContainer.textContent += name + ': ' + message + '\n';
     messageContainer.scrollTop = messageContainer.scrollHeight;
-    displayChatMessage(nickname,message);
+    //displayChatMessage(nickname,message);
     input_element.value = ""; //resets input box to show placeholder after message sent
 }
 
@@ -97,8 +98,8 @@ document.getElementById('chat-input').addEventListener('keydown',function(event)
 function displayChatMessage(sender, message) {
   const chatMessages = document.getElementById("message-container");
   const message_element = document.createElement("div");
-  message_element.classList.add('message')
-  message_element.textContent = '${sender}: ${message}';
+  //message_element.classList.add('message') //not doing anything
+  message_element.textContent = sender + message;
   chatMessages.appendChild(message_element);
 }
 
