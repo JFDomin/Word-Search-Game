@@ -308,10 +308,14 @@ connection.onmessage = function (evt) {
     }
     if('words' in obj){
     }
-    else if(obj.button === "chatMsg" && obj.GameId == gameid){
+    else{
+        console.log("Message received: ", obj.msg);
+    }
+    if(obj.button == "chatMsg" && obj.GameId == gameid){
         console.log(obj.GameId, gameid);
         displayChatMessage(obj.nickname, obj.msg);
         console.log("Message received: ", obj.msg);
+        return;
     }
     if('version' in obj){
         console.log(obj.version);
