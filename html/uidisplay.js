@@ -74,6 +74,7 @@ function sendMessage() {
     U.nickname = nickname;
     U.button = "chatMsg";
     U.msg = message;
+    U.GameId = gameid;
 
   
     connection.send(JSON.stringify(U));
@@ -307,8 +308,9 @@ connection.onmessage = function (evt) {
     }
     if('words' in obj){
     }
-    else if(obj.button === "chatMsg"){
-        displayChatMessage(obj.nickname, obj.msg)
+    else if(obj.button === "chatMsg" && obj.GameId == gameid){
+        console.log(obj.GameId, gameid);
+        displayChatMessage(obj.nickname, obj.msg);
         console.log("Message received: ", obj.msg);
     }
     if('version' in obj){
