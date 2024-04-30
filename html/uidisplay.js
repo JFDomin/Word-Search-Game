@@ -65,8 +65,9 @@ const messageContainer = document.getElementById('message-container');
 function sendMessage() {
   const input_element = document.getElementById("chat-input");
   const message = document.getElementById("chat-input").value;
-  const name = document.getElementById("input-data").value;
-  console.log(name, ": ",message);
+  const nick_name = document.getElementById("input-data").value;
+  nickname = nick_name;
+  console.log(nick_name, ": ",message);
 
   if (message !== "") {
     U = new UserEvent;
@@ -76,8 +77,8 @@ function sendMessage() {
 
   
     connection.send(JSON.stringify(U));
-    console.log(name + " sending message:" + message);
-    messageContainer.textContent += name + ': ' + message + '\n';
+    console.log(nick_name + " sending message:" + message);
+    //messageContainer.textContent += name + ': ' + message + '\n';
     messageContainer.scrollTop = messageContainer.scrollHeight;
     //displayChatMessage(nickname,message);
     input_element.value = ""; //resets input box to show placeholder after message sent
@@ -297,8 +298,9 @@ connection.onmessage = function (evt) {
     }
     if('words' in obj){
     }
-    else{
-        console.log("Message received: ", msg);
+    else if(obj.button === "chatMsg"){
+        displayChatMessage(obj.nickname, obj.msg)
+        console.log("Message received: ", obj.msg);
     }
     if('version' in obj){
         console.log(obj.version);
@@ -314,9 +316,9 @@ connection.onmessage = function (evt) {
         tableContainer.innerHTML = displayGrid(obj.data);
         document.getElementById('table-container').style.display = 'none';
     }
-    if(obj.type === "chat") {
-        displayChatMessage(obj.sender,obj.message);
-        return;
+    // if(obj.type === "chat") {
+    //     displayChatMessage(obj.sender,obj.message);
+    //     return;
     } 
     if('YouAre' in obj){
         if(obj.YouAre == "PLAYER1"){
