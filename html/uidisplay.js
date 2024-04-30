@@ -235,7 +235,7 @@ function handleNickEnter(){
 
 }
 
-document.getElementById("join-button").addEventListener("click",handleNickEnter);
+// document.getElementById("join-button").addEventListener("click",handleNickEnter);
 document.getElementById('input-data').addEventListener('keydown',function(event){
   if(event.key === 'Enter') {
     handleNickEnter();
