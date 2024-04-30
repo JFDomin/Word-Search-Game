@@ -79,7 +79,7 @@ public class App extends WebSocketServer implements Runnable{
   private BufferedReader bufferedReader;
   private BufferedWriter bufferedWriter;
   private String clientUsername;
-  private Player currentWinner; 
+  public Player currentWinner; 
   private int winnerScore; 
 
 

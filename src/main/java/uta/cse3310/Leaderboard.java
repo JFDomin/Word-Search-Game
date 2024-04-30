@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
  
 public class Leaderboard {
-    private List<Player> players;
+    public List<Player> players;
  
     public Leaderboard() {
         this.players = new ArrayList<>();
