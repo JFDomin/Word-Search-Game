@@ -95,6 +95,7 @@ document.getElementById('chat-input').addEventListener('keydown',function(event)
 
 
 
+
 //displaying message
 function displayChatMessage(sender, message) {
   const chatMessages = document.getElementById("message-container");
@@ -232,6 +233,14 @@ function handleNickEnter(){
     }
 
 }
+
+document.getElementById("join-button").addEventListener("click",handleNickEnter);
+document.getElementById('input-data').addEventListener('keydown',function(event){
+  if(event.key === 'Enter') {
+    handleNickEnter();
+  }
+})
+
 function readyPlayer(){
     const nickname = document.getElementById("input-data").value
     // logic is not complete yet
