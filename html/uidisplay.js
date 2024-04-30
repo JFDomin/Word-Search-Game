@@ -100,7 +100,7 @@ function displayChatMessage(sender, message) {
   const chatMessages = document.getElementById("message-container");
   const message_element = document.createElement("div");
   //message_element.classList.add('message') //not doing anything
-  message_element.textContent = sender + message;
+  message_element.textContent = sender + ": " + message;
   chatMessages.appendChild(message_element);
 }
 
@@ -319,7 +319,7 @@ connection.onmessage = function (evt) {
     // if(obj.type === "chat") {
     //     displayChatMessage(obj.sender,obj.message);
     //     return;
-    } 
+    // }
     if('YouAre' in obj){
         if(obj.YouAre == "PLAYER1"){
             idx = 1;
