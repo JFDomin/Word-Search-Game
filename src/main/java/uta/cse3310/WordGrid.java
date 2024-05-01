@@ -23,6 +23,7 @@ public class WordGrid {
     double diagUp = 0;
     double diagDown = 0;
     double VerticalUp = 0;
+    int sharedWords = 0;
     ArrayList<int [][]> wordCoordinates = new ArrayList<>();
     final double minPercentage = 0.15;
     ArrayList<Double> stats = new ArrayList<>();
@@ -84,10 +85,19 @@ public class WordGrid {
         int row = start[0];
         int col = start[1];
         boolean isEmpty = true;
+        boolean shared = false;
         if(col + length < size){
             for(int i = 0; i < length; i++){
                 if(grid[row][col] != null){
-                    isEmpty = false;
+                    if(sharedWords < 10 && i == 0 && grid[row][col] == word.charAt(0)){
+                        shared = true;
+                    }
+                    else if(sharedWords < 10 && i == length -1 && grid[row][col] == word.charAt(i)){
+                        shared = true;
+                    }
+                    else{
+                        isEmpty = false;
+                    }
                 }
                 col++;
             }
@@ -103,6 +113,9 @@ public class WordGrid {
                 horizontal++;
                 usedWords.add(word);
                 wordCoordinates.add(new int[][]{start,end});
+                if(shared){
+                    sharedWords++;
+                }
             }
         }
     }
@@ -110,10 +123,16 @@ public class WordGrid {
         int row = start[0];
         int col = start[1];
         boolean isEmpty = true;
+        boolean shared = false;
         if(row + length < size) {
             for(int i = 0; i < length; i++){
                 if(grid[row][col] != null){
-                    isEmpty = false;
+                    if(sharedWords < 10 && i == 0 && grid[row][col] == word.charAt(0)){
+                        shared = true;
+                    }
+                    else{
+                        isEmpty = false;
+                    }
                 }
                 row++;
             }
@@ -129,6 +148,9 @@ public class WordGrid {
                 vertical++;
                 wordCoordinates.add(new int[][]{start,end});
                 usedWords.add(word);
+                if(shared){
+                    sharedWords++;
+                }
             }
         }
     }
@@ -136,10 +158,16 @@ public class WordGrid {
         int row = start[0];
         int col = start[1];
         boolean isEmpty = true;
+        boolean shared = false;
         if(row - length >= 0 && col + length < size){
             for(int i = 0; i < length; i++){
                 if (grid[row][col] != null){
-                    isEmpty = false;
+                    if(sharedWords < 10 && i == 0 && word.charAt(0) == grid[row][col]){
+                        shared = true;
+                    }
+                    else{
+                        isEmpty = false;
+                    }
                 }
                 row--;
                 col++;
@@ -157,7 +185,11 @@ public class WordGrid {
                 diagUp++;
                 wordCoordinates.add(new int[][]{start, end});
                 usedWords.add(word);
+                if(shared){
+                    sharedWords++;
+                }
             }
+            
         }
     }
 
@@ -165,10 +197,16 @@ public class WordGrid {
         int row = start[0];
         int col = start[1];
         boolean isEmpty = true;
+        boolean shared = false;
         if(row + length < size && col - length >= 0){
             for(int i = 0; i < length; i++){
                 if (grid[row][col] != null){
-                    isEmpty = false;
+                    if(sharedWords < 10 && i == 0 && word.charAt(0) == grid[row][col]){
+                        shared = true;
+                    }
+                    else{
+                        isEmpty = false;
+                    }
                 }
                 row++;
                 col--;
@@ -186,6 +224,9 @@ public class WordGrid {
                 wordCoordinates.add(new int[][]{start,end});
                 diagDown++;
                 usedWords.add(word);
+                if(shared){
+                    sharedWords++;
+                }
             }
         }
     }
@@ -218,10 +259,16 @@ public class WordGrid {
         int row = start[0];
         int col = start[1];
         boolean isEmpty = true;
+        boolean shared = false;
         if(row - length >=  0) {
             for(int i = 0; i < length; i++){
                 if(grid[row][col] != null){
-                    isEmpty = false;
+                    if(sharedWords < 10 && i == 0 && word.charAt(0) == grid[row][col]){
+                        shared = true;
+                    }
+                    else{
+                        isEmpty = false;
+                    }
                 }
                 row--;
             }
@@ -237,6 +284,9 @@ public class WordGrid {
                 VerticalUp++;
                 wordCoordinates.add(new int[][]{start,end});
                 usedWords.add(word);
+                if(shared){
+                    sharedWords++;
+                }
             }
         }
     }
@@ -292,6 +342,7 @@ public class WordGrid {
         horizontal = 0;
         vertical = 0;
         VerticalUp = 0;
+        sharedWords = 0;
         wordCoordinates.clear();
         usedWords.clear();
     }
@@ -320,6 +371,7 @@ public class WordGrid {
 
         System.out.println( horizontal+"      \t" + vertical+"      \t" + diagUp+"   \t" +diagDown+ "    \t" + VerticalUp);
         System.out.println("horizontal: " + horPercentage+ " vert: "+ vertPercentage+" diagUp: "+diagUpPerc + " diagDown: "+ diagDownPerc+ "vert Up: " + verticalUpPerc);
+        System.out.println("number of shared words: " + sharedWords);
     }
     public void calculateStats(){
         double numWords = usedWords.size();
