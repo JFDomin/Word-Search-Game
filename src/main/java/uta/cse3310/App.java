@@ -404,7 +404,12 @@ public class App extends WebSocketServer implements Runnable{
         winner = p;
       }
     }
-    System.out.println("winner is: " + winner.nickname);
+    if(winner != null){
+      System.out.println("winner is: " + winner.nickname);
+    }
+    else{
+      System.out.println("tie");
+    }
     currentWinner = winner;
     winnerScore = maxScore;
   }

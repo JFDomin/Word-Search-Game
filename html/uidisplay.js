@@ -311,17 +311,12 @@ connection.onmessage = function (evt) {
     else{
         console.log("Message received: ", obj.msg);
     }
-    if(obj.button == "chatMsg" && obj.GameId == gameid){
-        console.log(obj.GameId, gameid);
-        displayChatMessage(obj.nickname, obj.msg);
-        console.log("Message received: ", obj.msg);
-        return;
-    }
     if('version' in obj){
         console.log(obj.version);
         const version = obj.version;
         const title = document.getElementsByClassName('gameVersion');
-        title[0].innerHTML = "Version: " + version;
+        document.title = version;
+        // title[0].innerHTML = "Version: " + version;
         return;
     }
     if (obj.type == "wordGrid"){
@@ -436,6 +431,11 @@ connection.onmessage = function (evt) {
             }
             document.getElementById('topMessage').innerHTML = statsString;
 
+        }
+        if(obj.button == "chatMsg"){
+            console.log(obj.GameId, gameid);
+            displayChatMessage(obj.nickname, obj.msg);
+            console.log("Message received: ", obj.msg);
         }
     }
 }
