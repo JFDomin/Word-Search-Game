@@ -40,11 +40,15 @@ public class WordSearchGame{
     
     public void startGame() {
         grid.generateGrid(wordBank);
+        while(!grid.checkGrid(wordBank)){
+            grid.generateGrid(wordBank);
+        }
     }
     public void startGame(int gridNo){
         multiGrids();
         grid = selectGrid.get(gridNo);
         grid.generateGrid(wordBank);
+        // grid.checkGrid(wordBank);
     }
     public Character[][] getwordgrid(){ 
         return grid.getgrid();
@@ -82,7 +86,7 @@ public class WordSearchGame{
             return "DiagUp";
         }
         else{
-            return "f0o";
+            return "VerticalUp";
         }
     }
     public boolean checkAllReady(){

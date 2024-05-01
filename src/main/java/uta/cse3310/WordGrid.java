@@ -22,6 +22,7 @@ public class WordGrid {
     double reverse = 0;
     double diagUp = 0;
     double diagDown = 0;
+    double VerticalUp = 0;
     ArrayList<int [][]> wordCoordinates = new ArrayList<>();
     final double minPercentage = 0.15;
     ArrayList<Double> stats = new ArrayList<>();
@@ -74,7 +75,7 @@ public class WordGrid {
             placeDiagonalUp(word,newStart,length);
             break;
             case 5:
-            placeReverse(word,newStart,length);
+            placeVerticalUp(word,newStart,length);
             break;
         }
     }
@@ -213,7 +214,50 @@ public class WordGrid {
             }
         }
     }
+    public void placeVerticalUp(String word, int[] start, int length){
+        int row = start[0];
+        int col = start[1];
+        boolean isEmpty = true;
+        if(row - length >=  0) {
+            for(int i = 0; i < length; i++){
+                if(grid[row][col] != null){
+                    isEmpty = false;
+                }
+                row--;
+            }
+            if(isEmpty){
+                row = start[0];
+                col = start[1];
+                for(int i = 0; i < length; i++){
+                    grid[row][col] = word.charAt(i);
+                    row--;
+                    validCharCount++;
+                }
+                int[] end = new int[]{row+1,col};
+                VerticalUp++;
+                wordCoordinates.add(new int[][]{start,end});
+                usedWords.add(word);
+            }
+        }
+    }
+    public boolean checkGrid(ArrayList<String> wordBank){
+        double numWords = usedWords.size();
+        double horPercentage = horizontal/numWords;
+        double vertPercentage = vertical/numWords;
+        double diagUpPerc = diagUp/numWords;
+        double diagDownPerc = diagDown/numWords;
+        double revPerc = reverse/numWords;
+        double vertUpPerc = VerticalUp/numWords;
+        //         while(vertPercentage < minPercentage || horPercentage < minPercentage || diagDownPerc < minPercentage || diagUpPerc < minPercentage || revPerc < minPercentage){
 
+        if(vertPercentage < minPercentage || horPercentage < minPercentage || diagDownPerc < minPercentage || diagUpPerc < minPercentage || vertUpPerc < minPercentage){
+            resetGrid();
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
     public void fillGrid(){
         for(int i = 0; i < size; i++){
             for(int j = 0; j < size; j++){
@@ -247,6 +291,7 @@ public class WordGrid {
         diagUp = 0;
         horizontal = 0;
         vertical = 0;
+        VerticalUp = 0;
         wordCoordinates.clear();
         usedWords.clear();
     }
@@ -268,12 +313,13 @@ public class WordGrid {
         double diagUpPerc = diagUp/numWords;
         double diagDownPerc = diagDown/numWords;
         double revPerc = reverse/numWords;
+        double verticalUpPerc = VerticalUp/numWords;
 
         System.err.println("totalchar: " + totalCharCount + " validChar = "+ validCharCount);
         System.out.println("Horizontal\tVertical\tDiagUp\tDiagDown\tReverse");
 
-        System.out.println( horizontal+"      \t" + vertical+"      \t" + diagUp+"   \t" +diagDown+ "    \t" + reverse);
-        System.out.println("horizontal: " + horPercentage+ " vert: "+ vertPercentage+" diagUp: "+diagUpPerc + " diagDown: "+ diagDownPerc+ "reverse: " + revPerc);
+        System.out.println( horizontal+"      \t" + vertical+"      \t" + diagUp+"   \t" +diagDown+ "    \t" + VerticalUp);
+        System.out.println("horizontal: " + horPercentage+ " vert: "+ vertPercentage+" diagUp: "+diagUpPerc + " diagDown: "+ diagDownPerc+ "vert Up: " + verticalUpPerc);
     }
     public void calculateStats(){
         double numWords = usedWords.size();
@@ -281,12 +327,13 @@ public class WordGrid {
         double vertPercentage = vertical/numWords;
         double diagUpPerc = diagUp/numWords;
         double diagDownPerc = diagDown/numWords;
-        double revPerc = reverse/numWords;
+        // double revPerc = reverse/numWords;
+        double verticalUpPerc = VerticalUp/numWords;
         stats.add(density);
         stats.add(horPercentage);
         stats.add(diagDownPerc);
         stats.add(diagDownPerc);
         stats.add(vertPercentage);
-        stats.add(revPerc);
+        stats.add(verticalUpPerc);
     }
 }

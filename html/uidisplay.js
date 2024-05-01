@@ -391,7 +391,10 @@ connection.onmessage = function (evt) {
             }
             else if(orientation === 'reverse'){
                 highlightReverse(coords,color);
-            }                                                                                                                                                                                                                                                                                                
+            } 
+            else if(orientation === 'VerticalUp'){
+                highlightVerticalUp(coords, color);
+            }                                                                                                                                                                                                                                                                                             
         }
         else if('GameOver' in obj){
             document.getElementById('table-container').style.display = 'none';
@@ -424,7 +427,7 @@ connection.onmessage = function (evt) {
                         statLabel = "Vertical Percentage";
                         break;
                     case 5:
-                        statLabel = "Reverse Percentage";
+                        statLabel = "Vertical Percentage";
                         break;
                 }
                 statsString += statLabel + ": " + stats[i].toFixed(4)+"<br>";
@@ -461,6 +464,18 @@ function highlightVertical(coords, color){
     const endCol = coords[1][1];
     //column stays the same for vertical
     for(let j = startRow; j <= endRow; j++){
+        const buttonId = 'button-'+ j +','+startCol;
+        const button = document.getElementById(buttonId);
+        button.style.backgroundColor = color;
+    }
+}
+function highlightVerticalUp(coords, color){
+    const startRow= coords[0][0];
+    const endRow = coords[1][0];
+    const startCol = coords[0][1];
+    const endCol = coords[1][1];
+    //column stays the same for vertical
+    for(let j = startRow; j >= endRow; j--){
         const buttonId = 'button-'+ j +','+startCol;
         const button = document.getElementById(buttonId);
         button.style.backgroundColor = color;

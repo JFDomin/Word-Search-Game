@@ -38,7 +38,7 @@ extends TestCase{
         assertEquals(50, grid.grid[0].length);
 
         //number of usedWords is equal to all of the placements 
-        assertEquals(grid.usedWords.size(), (int)(grid.vertical + grid.horizontal + grid.diagDown + grid.diagUp + grid.reverse));
+        assertEquals(grid.usedWords.size(), (int)(grid.vertical + grid.horizontal + grid.diagDown + grid.diagUp + grid.VerticalUp));
         assertTrue(grid.density >= 0.67);
 
         //test to generate a 50 x 50 grid in less than 1 second with density >= 0.67
