@@ -195,13 +195,16 @@ public void Update(UserEvent U){
       System.out.println("Received selected cells message");
      }
      else if(U.button.equals("GameOver")) {
+        Player currentWinner = null;
+        int maxScore = 0;
         gameState = GameState.ENDED;
-        winner = new Player("Winner");
         for(Player p: players){
-            if(p.score > winner.score){
-                winner = p;
+            if(p.score > maxScore){
+                maxScore = p.score;
+                currentWinner = p;
             }
         }
+        winner = currentWinner;
       System.out.println("game over for game id: " + U.GameId); 
      }
      
