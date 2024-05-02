@@ -64,6 +64,33 @@ public class WholeGameTest
         String result = new String();
 
         game.startGame();
+        game.grid.resetGrid();
+        int[] start = new int[]{0,0};
+        String word = "horse";
+        game.grid.placeHorizontal(word, start, word.length());
+        //coordinates to send for correct placement [[0,0],[0,4]]
+
+        //this tests a shared letter as H is shared by both words 
+        //SREQ65
+        word = "heart";
+        start = new int[]{0,0};
+        //this is vertical down
+        game.grid.placeVertical(word, start, word.length());
+        //coordinates to send [[0,0],[4,0]]
+
+
+        word = "apple";
+        start = new int[]{5,5};
+        game.grid.placeVerticalUp(word,start,word.length());
+        //coordinates to send [[5,5],[1,5]]
+
+        word = "gold";
+        start = new int[]{20, 15};
+        game.grid.placeDiagonalDown(word,start,word.length());
+        // [[20,15],[23,12]]
+        game.grid.fillGrid();
+
+
         msg = "{\"GameId\":1,\"button\":\"join\",\"nickname\":\"ed\"}";
         result = update(game, "{\"GameId\":1,\"button\":\"startGame\",\"nickname\":\"ed\"}");
 
