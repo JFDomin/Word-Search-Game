@@ -111,7 +111,7 @@ public class WholeGameTest
         result = update(game,"{\"GameId\":1,\"button\":\"selectedCells\",\"nickname\":\"ed\",\"selectedCells\":[[1,23],[1,26]],\"Color\":\"#ff0000\"}");
         
         result = update(game, "{\"GameId\":1,\"button\":\"GameOver\"}");
-
+        assertNull(game.winner);
         assertTrue(game.gameState == GameState.ENDED);
 
 
