@@ -368,7 +368,7 @@ connection.onmessage = function (evt) {
             document.getElementById('table-container').style.display = 'block';
             document.getElementById('WaitingPlayers').style.display = 'none';
             document.getElementById('timer').style.display = 'block';
-            countdownTimer(600); // set to 10 minutes
+            countdownTimer(15); // set to 10 minutes
         }
         else if('awardWord' in obj){
             // need to implement sort and how to handle how it shows up on the screen
@@ -397,10 +397,27 @@ connection.onmessage = function (evt) {
             }                                                                                                                                                                                                                                                                                             
         }
         else if('GameOver' in obj){
-            document.getElementById('table-container').style.display = 'none';
-            document.getElementById('timer').style.display = 'none';
-            document.getElementById('GameOver').style.display = 'block';
-            document.getElementById('award-winner').innerHTML = 'Winner is ' + obj.nickname + ' with a score of ' + obj.score + '!';
+            if(obj.GameOver == "GameOver"){
+                document.getElementById('table-container').style.display = 'none';
+                document.getElementById('timer').style.display = 'none';
+                document.getElementById('GameOver').style.display = 'block';
+                document.getElementById('award-winner').innerHTML = 'Winner is ' + obj.nickname + ' with a score of ' + obj.score + '!';
+            }
+            else if(obj.GameOver == 'No winner'){
+                document.getElementById('table-container').style.display = 'none';
+                document.getElementById('timer').style.display = 'none';
+                document.getElementById('GameOver').style.display = 'block';
+                document.getElementById('award-winner').innerHTML = 'NO WINNER';
+            }
+            else{
+                // "GAME ENDS IN A TIE"
+                document.getElementById('table-container').style.display = 'none';
+                document.getElementById('timer').style.display = 'none';
+                document.getElementById('GameOver').style.display = 'block';
+                document.getElementById('award-winner').innerHTML = "GAME ENDS IN A TIE";
+
+            }
+            
         }
         else if('gridStats' in obj){
             console.log(msg);

@@ -81,7 +81,7 @@ public class App extends WebSocketServer implements Runnable{
   private String clientUsername;
   public Player currentWinner; 
   private int winnerScore; 
-
+  public int numPlayersTie = 0;
 
   private WordGrid Grid;
 
@@ -381,13 +381,31 @@ public class App extends WebSocketServer implements Runnable{
       for (WordSearchGame G : ActiveGames) {
         if (G.gameID == U.GameId) {
           getWinner(G);
-          JsonObject jsonObject = new JsonObject();
-          jsonObject.addProperty("GameOver", "GameOver");
-          jsonObject.addProperty("GameId", U.GameId);
-          jsonObject.addProperty("nickname", currentWinner.nickname);
-          jsonObject.addProperty("score", winnerScore);
-          String gameOver = gson.toJson(jsonObject);
-          broadcast(gameOver);
+          if(numPlayersTie > 1){
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("GameOver", "GAME ENDS IN A TIE");
+            jsonObject.addProperty("GameId", U.GameId);
+            String gameOver = gson.toJson(jsonObject);
+            broadcast(gameOver);
+          }
+          else if(currentWinner != null){
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("GameOver", "GameOver");
+            jsonObject.addProperty("GameId", U.GameId);
+            jsonObject.addProperty("nickname", currentWinner.nickname);
+            jsonObject.addProperty("score", winnerScore);
+            String gameOver = gson.toJson(jsonObject);
+            broadcast(gameOver);
+          }
+          else{
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("GameOver", "No winner");
+            jsonObject.addProperty("GameId", U.GameId);
+            String gameOver = gson.toJson(jsonObject);
+            broadcast(gameOver);
+            System.out.println(numPlayersTie);
+          }
+          
         }
       }
       System.out.println("game over for game id: " + U.GameId); 
@@ -402,6 +420,11 @@ public class App extends WebSocketServer implements Runnable{
       if (p.score > maxScore) {
         maxScore = p.score;
         winner = p;
+      }
+    }
+    for(Player p: G.players){
+      if(p.score == maxScore){
+        numPlayersTie++;
       }
     }
     if(winner != null){
