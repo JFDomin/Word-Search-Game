@@ -14,6 +14,7 @@ public class WordSearchGame{
    public GameState gameState;
    public Map<Player, Integer> scores;
    public int maxPlayers;
+   public ArrayList<String> playerNames = new ArrayList<>();
    public List<String> currentWords;
    int numPlayers = 0;
     ArrayList<String> words = WordBank.readFileIntoArray("src/main/java/uta/cse3310/filtered_word 1.txt");
@@ -47,8 +48,9 @@ public class WordSearchGame{
     public void startGame(int gridNo){
         multiGrids();
         grid = selectGrid.get(gridNo);
-        grid.generateGrid(wordBank);
-        // grid.checkGrid(wordBank);
+        while(!grid.checkGrid(wordBank)){
+            grid.generateGrid(wordBank);
+        }
     }
     public Character[][] getwordgrid(){ 
         return grid.getgrid();
@@ -97,6 +99,111 @@ public class WordSearchGame{
         }
         return true;
     }
+// stuff to keep in the App.java
+//playerNames.add(player1.nickname);
+/*
+player1.conn = conn;
 
+*/
 
+public void Update(UserEvent U){
+     
+     if(U.button.equals("join")){
+      if(players.size() == 0){
+        Player player1 = new Player(U.nickname);
+        players.add(player1);
+        playerNames.add(U.nickname);
+        if(gameID == U.GameId){
+          player1.playerID = 0;
+          player1.setPlayerColor();
+          usedColors.add(player1.playerColor);
+          players.add(player1);
+        }
+      }
+      else{
+        if(!playerNames.contains(U.nickname)){
+          Player player1 = new Player(U.nickname);
+          players.add(player1);
+          playerNames.add(player1.nickname);
+            if(gameID == U.GameId){
+              player1.playerID = players.size();
+              //set the color of the player and add it to the usedColors list
+              player1.setPlayerColor();
+              while(usedColors.contains(player1.playerColor)){
+                player1.setPlayerColor();
+              }
+              usedColors.add(player1.playerColor);
+              players.add(player1);
+            }
+        }
+        else{
+          System.out.println("Name not unique");
+        }
+      }
+     }
+     else if(U.button.equals("readyUp")){
+        if(gameID == U.GameId){
+          for(Player p: players){
+            if(p.nickname.equals(U.nickname)){
+              if(p.isReady){
+                p.isReady = false;
+                numPlayersReady--;
+                System.out.println("ready = false " + p.nickname);
+              }
+              else{
+                p.isReady = true;
+                System.out.println("ready = true " +  p.nickname);
+                numPlayersReady++;
+              }
+            }
+          }
+        }
+      //added this line
+      }
+      else if(U.button.equals("startGame")){
+          if(gameID == U.GameId){
+            if(numPlayers >= 2 && numPlayersReady == numPlayers && checkAllReady()){
+              isStarted = true;
+              System.out.println("Enough players to play, still need to add functionality");
+            }
+            else{
+              System.out.println(numPlayers + " ready: " + numPlayersReady);
+              System.out.println("Not enough players ready to play");
+            }
+          }
+        
+     }
+     else if(U.button.equals("selectedCells")){
+      System.out.println(Arrays.deepToString(U.selectedCells));
+        if(gameID == U.GameId){
+          //if the two selected are words, then award points to player
+          //send info to client side to read and highlight in the player color
+          /*ADD CHECK FOR IF THE WORD WAS ALREADY FOUND, DONT AWARD POINTS/HIGHLIGHT IF ALREADY FOUND*/
+          if(grid.checkCoordinates(U.selectedCells)){
+            if(checkWordsFound(U.selectedCells)){
+            foundCoords.add(U.selectedCells);
+            for(Player p: players){
+              if(p.nickname.equals(U.nickname)){
+                p.score += 1;
+                // System.out.println(p.nickname +": "+p.score);
+              }
+            }
+          }
+        }
+        }
+      System.out.println("Received selected cells message");
+     }
+     else if(U.button.equals("GameOver")) {
+        gameState = GameState.ENDED;
+        Player winner = new Player("Winner");
+        for(Player p: players){
+            if(p.score > winner.score){
+                winner = p;
+            }
+        }
+      System.out.println("game over for game id: " + U.GameId); 
+     }
+     
+  }
 }
+

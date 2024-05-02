@@ -127,7 +127,7 @@ public class App extends WebSocketServer implements Runnable{
       
       //no matches? create new game
       if(G == null){
-        if(ActiveGames.size() <= 15){
+        if(ActiveGames.size() <= 5){
           G = new WordSearchGame();
           G.gameID = GameId;
           GameId++;
