@@ -32,6 +32,7 @@ public class WordSearchGame{
         IN_PROGRESS,
         ENDED 
     }
+    public Player winner;
     public void multiGrids(){
         for(int i = 0; i < 7; i++){
             WordGrid newGrid = new WordGrid(35,wordBank);
@@ -195,7 +196,7 @@ public void Update(UserEvent U){
      }
      else if(U.button.equals("GameOver")) {
         gameState = GameState.ENDED;
-        Player winner = new Player("Winner");
+        winner = new Player("Winner");
         for(Player p: players){
             if(p.score > winner.score){
                 winner = p;
