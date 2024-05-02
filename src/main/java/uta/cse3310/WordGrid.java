@@ -27,6 +27,8 @@ public class WordGrid {
     ArrayList<int [][]> wordCoordinates = new ArrayList<>();
     final double minPercentage = 0.15;
     ArrayList<Double> stats = new ArrayList<>();
+    ArrayList<int [][]> diagDownCoord = new ArrayList<>();
+    ArrayList<int [][]> diagUpCoords = new ArrayList<>();
 
     public WordGrid(int size, ArrayList<String> wordBank){
         grid = new Character[size][size];
@@ -130,6 +132,9 @@ public class WordGrid {
                     if(sharedWords < 10 && i == 0 && grid[row][col] == word.charAt(0)){
                         shared = true;
                     }
+                    else if(sharedWords < 10 && i < length -1  && grid[row][col] == word.charAt(i)){
+                        shared = true;
+                    }
                     else{
                         isEmpty = false;
                     }
@@ -165,6 +170,9 @@ public class WordGrid {
                     if(sharedWords < 10 && i == 0 && word.charAt(0) == grid[row][col]){
                         shared = true;
                     }
+                    else if(sharedWords < 10 && i < length -1  && grid[row][col] == word.charAt(i)){
+                        shared = true;
+                    }
                     else{
                         isEmpty = false;
                     }
@@ -184,6 +192,7 @@ public class WordGrid {
                 int[] end = new int[]{row+1,col-1};
                 diagUp++;
                 wordCoordinates.add(new int[][]{start, end});
+                diagUpCoords.add(new int[][]{start,end});
                 usedWords.add(word);
                 if(shared){
                     sharedWords++;
@@ -204,6 +213,9 @@ public class WordGrid {
                     if(sharedWords < 10 && i == 0 && word.charAt(0) == grid[row][col]){
                         shared = true;
                     }
+                    else if(sharedWords < 10 && i < length -1  && grid[row][col] == word.charAt(i)){
+                        shared = true;
+                    }
                     else{
                         isEmpty = false;
                     }
@@ -222,6 +234,7 @@ public class WordGrid {
                 }
                 int[] end = new int[]{row-1, col+1};
                 wordCoordinates.add(new int[][]{start,end});
+                diagDownCoord.add(new int[][]{start,end});
                 diagDown++;
                 usedWords.add(word);
                 if(shared){
@@ -264,6 +277,9 @@ public class WordGrid {
             for(int i = 0; i < length; i++){
                 if(grid[row][col] != null){
                     if(sharedWords < 10 && i == 0 && word.charAt(0) == grid[row][col]){
+                        shared = true;
+                    }
+                    else if(sharedWords < 10 && i < length -1  && grid[row][col] == word.charAt(i)){
                         shared = true;
                     }
                     else{
@@ -344,6 +360,8 @@ public class WordGrid {
         VerticalUp = 0;
         sharedWords = 0;
         wordCoordinates.clear();
+        diagDownCoord.clear();
+        diagUpCoords.clear();
         usedWords.clear();
     }
 
@@ -372,6 +390,14 @@ public class WordGrid {
         System.out.println( horizontal+"      \t" + vertical+"      \t" + diagUp+"   \t" +diagDown+ "    \t" + VerticalUp);
         System.out.println("horizontal: " + horPercentage+ " vert: "+ vertPercentage+" diagUp: "+diagUpPerc + " diagDown: "+ diagDownPerc+ "vert Up: " + verticalUpPerc);
         System.out.println("number of shared words: " + sharedWords);
+        // for(int[][] w : diagDownCoord){
+        //     System.out.println(Arrays.deepToString(w));
+        // }
+        System.out.println("now for diag up");
+        // for(int[][] w : diagUpCoords){
+        //     System.out.println(Arrays.deepToString(w));
+        // }
+
     }
     public void calculateStats(){
         double numWords = usedWords.size();
@@ -387,5 +413,6 @@ public class WordGrid {
         stats.add(diagDownPerc);
         stats.add(vertPercentage);
         stats.add(verticalUpPerc);
+        stats.add((double)sharedWords);
     }
 }

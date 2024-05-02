@@ -429,6 +429,9 @@ connection.onmessage = function (evt) {
                     case 5:
                         statLabel = "Vertical Percentage";
                         break;
+                    case 6:
+                        statLabel = "Words with shared letters"
+                        break;
                 }
                 statsString += statLabel + ": " + stats[i].toFixed(4)+"<br>";
             }
